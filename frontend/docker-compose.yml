@@ -1,0 +1,7 @@
+services:
+  httpd:
+    build:
+      context: .
+      dockerfile: Dockerfile.httpd
+    ports:
+      - "8081:80"
