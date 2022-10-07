@@ -1,7 +1,7 @@
 services:
-  httpd:
+  webserver:
     build:
-      context: .
-      dockerfile: Dockerfile.httpd
+      context: ./webserver
+      dockerfile: Dockerfile.webserver
     ports:
-      - "8081:80"
+      - "8080:5000"

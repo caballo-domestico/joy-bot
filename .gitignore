@@ -2,3 +2,4 @@ demiurges/**/.terraform/
 demiurges/**/.terraform.lock.hcl
 demiurges/**/terraform.tfstate
 demiurges/**/terraform.tfstate.backup
+frontend/webserver/**/__pycache__/
