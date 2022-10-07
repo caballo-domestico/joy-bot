@@ -1,1 +1,4 @@
-**/*.backup
+demiurges/**/.terraform/
+demiurges/**/.terraform.lock.hcl
+demiurges/**/terraform.tfstate
+demiurges/**/terraform.tfstate.backup
