@@ -14,9 +14,8 @@ provider "aws" {
 }
 
 resource "aws_instance" "frontend" {
-  ami            = "ami-026b57f3c383c2eec"
-  instance_type  = "t2.micro"
-  instance_state = "running"
+  ami           = "ami-026b57f3c383c2eec"
+  instance_type = "t2.micro"
   tags = {
     Name = "frontend"
   }
