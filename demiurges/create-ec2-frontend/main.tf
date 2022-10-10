@@ -4,7 +4,6 @@ variable "key_name" {
   nullable    = false
 }
 
-
 terraform {
   required_providers {
     aws = {
