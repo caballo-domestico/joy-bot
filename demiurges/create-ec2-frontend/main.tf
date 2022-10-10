@@ -1,3 +1,10 @@
+variable "key_name" {
+  type        = string
+  description = "name of the ssh key pair to use registered in AWS"
+  nullable    = false
+}
+
+
 terraform {
   required_providers {
     aws = {
@@ -14,9 +21,36 @@ provider "aws" {
 }
 
 resource "aws_instance" "frontend" {
-  ami           = "ami-026b57f3c383c2eec"
-  instance_type = "t2.micro"
+  ami                    = "ami-026b57f3c383c2eec"
+  instance_type          = "t2.micro"
+  key_name               = var.key_name
+  vpc_security_group_ids = [aws_security_group.allow_ssh.id]
   tags = {
     Name = "frontend"
   }
 }
+
+resource "aws_security_group" "allow_ssh" {
+  name        = "allow_ssh"
+  description = "Allow ssh inbound traffic"
+
+  ingress {
+    description = "ssh"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "allow_ssh"
+  }
+}
+
