@@ -1,0 +1,8 @@
+<!doctype html>
+    <title>Upload new prescription</title>
+    <h1>Upload new prescription</h1>
+    <form method=post enctype=multipart/form-data>
+      <input type=file name=prescription>
+      <input type=submit value=Upload-prescription>
+    </form>
+    {% include 'print-flashed-messages.html' %}
