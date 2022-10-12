@@ -72,3 +72,7 @@ module "dynamodb_table" {
   }
 }
 
+output "Retrieve_ip" {
+  value = aws_instance.frontend.*.public_ip
+}
+
