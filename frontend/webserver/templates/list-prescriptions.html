@@ -1,8 +1,14 @@
-<!doctype html>
+{% extends "base.html" %}
+{% block head %}
+{{ super() }}
 <title>Prescriptions list</title>
+{% endblock %}
+{% block content %}
+{{ super() }}
 <h1>Prescriptions of {{ request.args.get('username') }}</h1>
-<ol>
+<ol class="list-group">
   {% for name in names: %}
-  <li><a href=/get-prescription?username={{ username }}&fileName={{ name }}> {{ name }}</a></li>
+  <li class="list-group-item"><a href=/get-prescription?username={{ username }}&fileName={{ name }}> {{ name }}</a></li>
   {% endfor %}
   </ul>
+  {% endblock %}

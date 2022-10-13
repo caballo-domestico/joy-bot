@@ -4,9 +4,10 @@ import boto3
 from webserver.dao import PrescriptionsDao, PrescriptionBean
 from tempfile import TemporaryFile
 from urllib.parse import quote_plus
-from flask_bootstrap import Bootstrap
+from flask_bootstrap import Bootstrap5
 
 app = Flask(__name__)
+bootstrap = Bootstrap5(app)
 app.config['SECRET_KEY'] = 'df0331cefc6c2b9a5d0208a726a5d1c0fd37324feba25509'
 messages = [{'title': 'Message One',
              'content': 'Message One Content'},
@@ -46,12 +47,12 @@ def upload_prescription():
     if request.method == 'POST':
         # check if the post request has the file part
         if 'prescription' not in request.files:
-            flash('No prescription selected')
+            flash('No prescription selected', "danger")
         file = request.files['prescription']
         # If the user does not select a file, the browser submits an
         # empty file without a filename.
         if file.filename == '':
-            flash('No selected file')
+            flash('No selected file', "danger")
         if file and allowed_file(file.filename):
             fileName = secure_filename(file.filename).replace(" ", "_")        
             username=quote_plus("test")

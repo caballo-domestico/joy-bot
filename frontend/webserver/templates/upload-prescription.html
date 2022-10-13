@@ -1,8 +1,14 @@
-<!doctype html>
-    <title>Upload new prescription</title>
+{% extends "base.html" %}
+{% block head %}
+{{ super() }}  
+<title>Upload new prescription</title>
+{% endblock %}
+{% block content %}
+{{ super() }}
     <h1>Upload new prescription</h1>
     <form method=post enctype=multipart/form-data>
       <input class="form-control" type=file name=prescription>
-      <input type=submit class="b" value=Upload-prescription>
+      <input type=submit class="btn btn-primary" value=Upload-prescription>
     </form>
     {% include 'print-flashed-messages.html' %}
+{% endblock %}
