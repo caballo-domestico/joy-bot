@@ -1,9 +1,11 @@
 from flask import Flask, render_template, request, flash
 import os
 import boto3
+from botocore.config import Config
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24).hex()
+os.environ['AWS_DEFAULT_REGION'] = 'us-east-1'
 
 @app.route('/', methods=('GET', 'POST'))
 def index():
@@ -26,3 +28,6 @@ def index():
                 }
             )
     return render_template('index.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
