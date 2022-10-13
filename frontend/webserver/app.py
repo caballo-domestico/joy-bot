@@ -4,11 +4,6 @@ import boto3
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24).hex()
-messages = [{'title': 'Message One',
-             'content': 'Message One Content'},
-            {'title': 'Message Two',
-             'content': 'Message Two Content'}
-            ]
 
 @app.route('/', methods=('GET', 'POST'))
 def index():
