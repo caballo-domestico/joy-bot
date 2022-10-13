@@ -1,6 +1,8 @@
-from flask import Flask, render_template, request, url_for, flash, redirect, send_file
+from flask import Flask, render_template, request, flash, send_file
+import os
 from werkzeug.utils import secure_filename
 import boto3
+from botocore.config import Config
 from webserver.dao import PrescriptionsDao, PrescriptionBean
 from tempfile import TemporaryFile
 from urllib.parse import quote_plus
@@ -8,12 +10,8 @@ from flask_bootstrap import Bootstrap5
 
 app = Flask(__name__)
 bootstrap = Bootstrap5(app)
-app.config['SECRET_KEY'] = 'df0331cefc6c2b9a5d0208a726a5d1c0fd37324feba25509'
-messages = [{'title': 'Message One',
-             'content': 'Message One Content'},
-            {'title': 'Message Two',
-             'content': 'Message Two Content'}
-            ]
+app.config['SECRET_KEY'] = os.urandom(24).hex()
+os.environ['AWS_DEFAULT_REGION'] = 'us-east-1'
 
 @app.route('/', methods=('GET', 'POST'))
 def index():
@@ -81,3 +79,6 @@ def get_prescription():
     return response
 
         
+
+if __name__ == '__main__':
+    app.run(debug=True)

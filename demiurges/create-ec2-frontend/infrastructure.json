@@ -1,0 +1,14 @@
+{
+  "Retrieve_ip": {
+    "sensitive": false,
+    "type": [
+      "tuple",
+      [
+        "string"
+      ]
+    ],
+    "value": [
+      "54.158.114.29"
+    ]
+  }
+}
