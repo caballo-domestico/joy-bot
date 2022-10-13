@@ -23,3 +23,11 @@ resource "aws_dynamodb_table" "prescriptions" {
     type = "S"
   }
 }
+
+resource "aws_s3_bucket" "prescriptions" {
+  bucket = "joy-bot.prescriptions"
+
+  tags = {
+    Name = "prescriptions"
+  }
+}

@@ -1,7 +1,10 @@
-from flask import Flask, render_template, request, url_for, flash, redirect
+from flask import Flask, render_template, request, url_for, flash, redirect, send_file
 from werkzeug.utils import secure_filename
 import boto3
-from os import environ
+from webserver.dao import PrescriptionsDao, PrescriptionBean
+from tempfile import TemporaryFile
+from urllib.parse import quote_plus
+from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'df0331cefc6c2b9a5d0208a726a5d1c0fd37324feba25509'
@@ -50,26 +53,30 @@ def upload_prescription():
         if file.filename == '':
             flash('No selected file')
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)            
-            # TODO: upload file to dynamo db
-            dynamodb = boto3.resource('dynamodb')
-            client = boto3.client('dynamodb')
-            table = dynamodb.Table('Prescriptions')
-            # TODO: update username and s3url with real values
-            username="test"
-            s3Url = "test"
-            table.put_item(
-                Item={
-                    "id": f"{username}_{filename}",
-                    "username": f"{username}",
-                    "prescription": f"{s3Url}"
-                }
-            )
-            response = table.scan()
-            items = response['Items']
-            flash(f"uploaded file: {filename}")
-            flash(f"items: {items}")
-            return redirect(request.url)
-
-
+            fileName = secure_filename(file.filename).replace(" ", "_")        
+            username=quote_plus("test")
+            dao = PrescriptionsDao()
+            dao.storePrescription(prescriptionBean=PrescriptionBean(username=username, file=file, fileName=fileName))
+            return redirect(f"/list-prescriptions?username={username}")
     return render_template('upload-prescription.html')
+
+@app.route('/list-prescriptions', methods=['GET'])
+def list_prescriptions():
+    username = request.args.get('username', type=str)
+    dao = PrescriptionsDao()
+    names = dao.loadAllUserPrescriptionsNames(prescriptionBean=PrescriptionBean(username=username))
+    return render_template('list-prescriptions.html', names=names, username=username)
+
+@app.route('/get-prescription', methods=['GET'])
+def get_prescription():
+    dao = PrescriptionsDao()
+    fileName = request.args.get('fileName', type=str)
+    username = request.args.get('username', type=str)
+    buf = TemporaryFile(mode="w+b")
+    prescriptionBean = PrescriptionBean(username=username, file=buf, fileName=fileName)
+    dao.loadPrescription(prescriptionBean=prescriptionBean)
+    buf.seek(0)
+    response = send_file(buf, attachment_filename=fileName, as_attachment=True)
+    return response
+
+        
