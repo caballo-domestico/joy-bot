@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, url_for, flash, redirect
+from flask import Flask, render_template, request, flash
+import os
 import boto3
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'df0331cefc6c2b9a5d0208a726a5d1c0fd37324feba25505'
+app.config['SECRET_KEY'] = os.urandom(24).hex()
 messages = [{'title': 'Message One',
              'content': 'Message One Content'},
             {'title': 'Message Two',
