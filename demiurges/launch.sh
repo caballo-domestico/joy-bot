@@ -2,7 +2,6 @@
 
 usage="Usagee: $0 TERRAFOM_SCRIPT_DIR --cfg-path <path> --cdls-path <path> --ssh-path <path> -p <profile>"
 
-
 trap 'echo "\"${BASH_COMMAND}\" command failed with exit code $?."' ERR # who made the mess???
 
 if [ $# -lt 1 ]
@@ -23,10 +22,6 @@ while [ "$1" != "" ]; do
     --cdls-path)
         shift
         export AWS_SHARED_CREDENTIALS_FILE="$1"
-        ;;
-    --ssh-path)
-        shift
-        export SSH_PATH="$1"
         ;;
     -p)
         shift
@@ -49,11 +44,4 @@ terraform apply # Applies the changes
 set +e
 
 terraform show  # Shows the current state of the infrastructure
-terraform output -json > ./infrastructure.json
-
-#setup ansible hosts file
-python3 getIp.py 
-
-#execute ansible file
-sudo ansible-playbook docker.yml
 
