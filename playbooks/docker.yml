@@ -52,3 +52,8 @@
         name: git
         state: present
         update_cache: yes
+    
+    - name: Copy aws config & credentials file
+      copy:
+        src: credentials
+        dest: $HOME/
