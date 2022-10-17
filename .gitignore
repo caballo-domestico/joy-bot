@@ -5,3 +5,4 @@ demiurges/**/terraform.tfstate.backup
 frontend/webserver/**/__pycache__/
 deploy/hosts
 deploy/infrastructure.json
+playbooks/credentials

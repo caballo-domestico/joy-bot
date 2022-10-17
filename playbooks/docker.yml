@@ -55,5 +55,6 @@
     
     - name: Copy aws config & credentials file
       copy:
-        src: credentials
-        dest: $HOME/
+        src: credentials 
+        dest: credentials
+        mode: '0644'
