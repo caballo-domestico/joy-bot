@@ -18,8 +18,6 @@ app.config['SECRET_KEY'] = os.urandom(24).hex()
 os.environ['AWS_DEFAULT_REGION'] = 'us-east-1'
 ALLOWED_EXTENSIONS = {'txt', 'pdf'}
 
-PUBLISHER = Publisher()
-
 @app.route('/', methods=('GET', 'POST'))
 def index():
     dynamodb = boto3.resource('dynamodb')
@@ -64,8 +62,10 @@ def upload_prescription():
             dao.storePrescription(prescriptionBean=PrescriptionBean(username=username, file=file, fileName=fileName))
 
             # publishes prescription to kafka
-            PUBLISHER.send(Topic.PRESCRIPTION_UPLOADED, value={'username': username, 'fileName': fileName})
-            PUBLISHER.flush()
+            p = Publisher()
+            metadata=p.send(Topic.PRESCRIPTION_UPLOADED.value, value={"username" : username, "filename" : filename}).get(timeout=30)
+            logging.debug(metadata)
+            p.close()
 
             return redirect(f"/list-prescriptions?username={username}")
     return render_template('upload-prescription.html')
@@ -88,6 +88,15 @@ def get_prescription():
     buf.seek(0)
     response = send_file(buf, attachment_filename=fileName, as_attachment=True)
     return response
+
+# TODO: remove testing endopint
+#@app.route('/test-publisher', methods=['GET'])
+#def test_publisher():
+#    PUBLISHER = Publisher()
+#    username = "test"
+#    filename = "test.txt"
+#    metadata=PUBLISHER.send(Topic.PRESCRIPTION_UPLOADED.value, value={"username" : username, "filename" : filename}).get(timeout=30)
+#    return "ok"
 
 if __name__ == '__main__':
     app.run(debug=True)

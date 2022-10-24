@@ -1,5 +1,11 @@
+networks:
+  app-tier:
+    driver: bridge
+
 services:
   webserver:
+    networks:
+      - app-tier
     build:
       context: ./webserver
       dockerfile: Dockerfile.webserver
@@ -8,9 +14,9 @@ services:
     depends_on:
       - kafka
   kafka:
+    networks:
+      - app-tier
     image: "bitnami/kafka:latest"
-    ports:
-      - "9092:9092"
     environment:
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_BROKER_ID=1
@@ -23,6 +29,17 @@ services:
     depends_on:
       - zookeeper
   zookeeper:
+    networks:
+      - app-tier
     image: 'bitnami/zookeeper:latest'
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
+  prescription-analyzer:
+    networks:
+      - app-tier
+    build:
+      context: ./prescription-analyzer
+      dockerfile: Dockerfile.pa
+    depends_on:
+      - kafka
+      - webserver
