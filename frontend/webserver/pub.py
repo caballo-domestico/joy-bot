@@ -21,5 +21,6 @@ class Publisher(KafkaProducer):
                          client_id="webserver")
                 connected = True
             except NoBrokersAvailable:
+                # kafka's not online yet, will retry after a brief pause
                 logging.info('Waiting for Kafka to be ready...')
                 time.sleep(1)

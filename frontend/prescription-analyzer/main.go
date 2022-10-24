@@ -25,14 +25,16 @@ func main() {
 		if err != nil {
 			log.Error(err)
 		} else {
-			log.Info("Message: ", string(m.Value))
+			log.Debug("Message: ", string(m.Value))
+
+			// TODO: Analyze prescription content with AWS Textract
+
+			// TODO: store prescription data in DynamoDB
+
 		}
 	}
 	if err := r.Close(); err != nil {
 		log.Fatal("failed to close reader:", err)
 	} 
 	
-	// TODO: Analyze prescription content with AWS Textract
-
-	// TODO: store prescription data in DynamoDB
 }
