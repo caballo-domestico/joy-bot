@@ -7,11 +7,18 @@ from dao import PrescriptionsDao, PrescriptionBean
 from tempfile import TemporaryFile
 from urllib.parse import quote_plus
 from flask_bootstrap import Bootstrap5
+from webserver.pub import Topic, Publisher
+import logging
+import json
 
+logging.basicConfig(level=logging.INFO)
 app = Flask(__name__)
 bootstrap = Bootstrap5(app)
 app.config['SECRET_KEY'] = os.urandom(24).hex()
 os.environ['AWS_DEFAULT_REGION'] = 'us-east-1'
+ALLOWED_EXTENSIONS = {'txt', 'pdf'}
+
+PUBLISHER = Publisher()
 
 @app.route('/', methods=('GET', 'POST'))
 def index():
@@ -35,7 +42,6 @@ def index():
             )
     return render_template('index.html')
 
-ALLOWED_EXTENSIONS = {'txt', 'pdf'}
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -47,15 +53,20 @@ def upload_prescription():
         if 'prescription' not in request.files:
             flash('No prescription selected', "danger")
         file = request.files['prescription']
-        # If the user does not select a file, the browser submits an
-        # empty file without a filename.
         if file.filename == '':
             flash('No selected file', "danger")
         if file and allowed_file(file.filename):
+            
+            # uploads prescription and its metadata to db
             fileName = secure_filename(file.filename).replace(" ", "_")        
             username=quote_plus("test")
             dao = PrescriptionsDao()
             dao.storePrescription(prescriptionBean=PrescriptionBean(username=username, file=file, fileName=fileName))
+
+            # publishes prescription to kafka
+            PUBLISHER.send(Topic.PRESCRIPTION_UPLOADED, value={'username': username, 'fileName': fileName})
+            PUBLISHER.flush()
+
             return redirect(f"/list-prescriptions?username={username}")
     return render_template('upload-prescription.html')
 
@@ -77,8 +88,6 @@ def get_prescription():
     buf.seek(0)
     response = send_file(buf, attachment_filename=fileName, as_attachment=True)
     return response
-
-        
 
 if __name__ == '__main__':
     app.run(debug=True)
