@@ -4,6 +4,18 @@
   hosts: all
   become: yes
   tasks:
+    - name: Copy app files
+      copy:
+        src: frontend/ 
+        dest: joy-bot
+        mode: '0644'
+
+    - name: Copy aws files
+      copy:
+        src: .aws/
+        dest: /home/ec2-user/.aws
+        mode: '0644'
+
     - name: Update all packages
       yum:
         name: '*'
@@ -46,15 +58,3 @@
         - boto
         - boto3
         - docker-compose
-    
-    - name: Install git
-      yum:
-        name: git
-        state: present
-        update_cache: yes
-    
-    - name: Copy aws config & credentials file
-      copy:
-        src: credentials 
-        dest: credentials
-        mode: '0644'

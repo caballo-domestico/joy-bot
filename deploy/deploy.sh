@@ -25,7 +25,7 @@ cd "$scriptDir"
 #setup ansible hosts file
 python3 getIp.py 
 #execute ansible file
-sudo ansible-playbook -i hosts -K "$rootDir/playbooks/docker.yml"  # TODO: add a playbook to deploy joy-bot
+sudo ansible-playbook -i hosts -K "$rootDir/docker.yml"  # TODO: add a playbook to deploy joy-bot
 
 set +e
 

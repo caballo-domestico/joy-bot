@@ -5,6 +5,8 @@ services:
       dockerfile: Dockerfile.webserver
     ports:
       - "8080:5000"
+    volumes:
+      - /home/ec2-user/joy-bot/.aws/:/app/.aws:ro
     depends_on:
       - kafka
 
