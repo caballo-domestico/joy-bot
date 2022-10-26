@@ -1,5 +1,7 @@
 import boto3
 from boto3.dynamodb.conditions import Attr
+from webserver.pub import Publisher, Topic
+import logging
 
 class FileBean:
 
@@ -59,9 +61,26 @@ class PrescriptionsDao(Dao):
         self.bucketName = "joy-bot.prescriptions"
     
     def storePrescription(self, prescriptionBean):
+        
+        # stores prescription to s3
         key = self.makeKey(prescriptionBean.username, prescriptionBean.fileName)
         fileBean = FileBean(file=prescriptionBean.file, key=key, bucketName=self.bucketName)
         self.storeFileToS3(fileBean)
+
+        # notify that a prescription has been uploaded
+        p = Publisher()
+        metadata=p.send(
+            Topic.PRESCRIPTION_UPLOADED.value,
+            value={
+                "bucket" : fileBean.bucketName,
+                "key" : fileBean.key,
+                "s3link" : fileBean.url,
+                "username": prescriptionBean.username,
+            }).get(timeout=30)
+        logging.debug(metadata)
+        p.close()
+
+        # stores prescrption metadata to dynamodb
         dynamoBean = DynamoBean(tableName=self.tableName, item={
             "id": key,
             "username": prescriptionBean.username,
