@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block head %}
+{{ super() }}  
+<title>Login</title>
+{% endblock %}
+{% block content %}
+{{ super() }}
+    <h1>Login</h1>
+    <form action='{{ url_for("signin")}}' method="post">
+      <div class="form-group">
+        <label for="exampleInputEmail1">Email address</label>
+        <input type="email" class="form-control" id="email" name="umail" aria-describedby="emailHelp" placeholder="Enter email">
+        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+      </div>
+      <div class="form-group">
+        <label for="exampleInputPassword1">Password</label>
+        <input type="password" class="form-control" id="password" name="upass" placeholder="Password">
+      </div>
+      <div class="form-group">
+        <label for="exampleFormControlSelect1">Example select</label>
+        <select class="form-control" id="user_type" name="utype">
+          <option>Doctor</option>
+          <option>Patient</option>
+        </select>
+      </div>
+      <input type=submit class="btn btn-primary" value=signin> 
+    </form>
+
+{% endblock %}

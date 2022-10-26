@@ -58,25 +58,6 @@ resource "aws_security_group" "allow_ssh" {
   }
 }
 
-module "dynamodb_table" {
-  source = "terraform-aws-modules/dynamodb-table/aws"
-
-  name     = "analisi"
-  hash_key = "cf"
-
-  attributes = [
-    {
-      name = "cf"
-      type = "S"
-    }
-
-  ]
-
-  tags = {
-    Name = "user-interface"
-  }
-}
-
 output "Retrieve_ip" {
   value = aws_instance.frontend.*.public_ip
 }

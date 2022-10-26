@@ -1,8 +1,11 @@
+from crypt import methods
+import email
 from flask import Flask, render_template, request, flash, send_file, redirect
 import os
 from werkzeug.utils import secure_filename
 import boto3
-from webserver.dao import PrescriptionsDao, PrescriptionBean
+from botocore.config import Config
+from webserver.dao import PrescriptionsDao, PrescriptionBean, RegistrationBean, RegistrationDao
 from tempfile import TemporaryFile
 from urllib.parse import quote_plus
 from flask_bootstrap import Bootstrap5
@@ -16,29 +19,21 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', "png", "jpg", "jpeg"}
 
 @app.route('/', methods=('GET', 'POST'))
 def index():
-    dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('analisi')
-
-    if request.method == 'POST':
-        title = request.form['title']
-        content = request.form['content']
-
-        if not title:
-            flash('Title is required!')
-        elif not content:
-            flash('Content is required!')
-        else:
-            table.put_item(
-            Item={
-                    'cf': title,
-                    'tipologia': content,
-                }
-            )
     return render_template('index.html')
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/signin', methods=('GET', 'POST'))
+def signin():
+    if request.method == 'POST':
+        email = request.form.get("umail")
+        password = request.form.get("upass")
+        user_type = request.form.get("utype")
+        registrationDao = RegistrationDao()
+        registrationDao.registerUser(registrationBean=RegistrationBean(email=email, password=password, user_type=user_type))
+    return render_template('signin.html')
 
 @app.route('/upload-prescription', methods=('GET', 'POST'))
 def upload_prescription():
