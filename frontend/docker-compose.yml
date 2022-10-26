@@ -6,7 +6,7 @@ services:
     ports:
       - "8080:5000"
     volumes:
-      - /home/ec2-user/joy-bot/.aws/:/app/.aws:ro
+      - ~/.aws/:/root/.aws
     depends_on:
       - kafka
 
@@ -33,6 +33,9 @@ services:
     build:
       context: ./prescription-analyzer
       dockerfile: Dockerfile.pa
+    volumes:
+      - ~/.aws/:/root/.aws
     depends_on:
       - kafka
       - webserver
+
