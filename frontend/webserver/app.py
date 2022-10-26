@@ -3,7 +3,7 @@ import os
 from werkzeug.utils import secure_filename
 import boto3
 from botocore.config import Config
-from dao import PrescriptionsDao, PrescriptionBean
+from webserver.dao import PrescriptionsDao, PrescriptionBean
 from tempfile import TemporaryFile
 from urllib.parse import quote_plus
 from flask_bootstrap import Bootstrap5
