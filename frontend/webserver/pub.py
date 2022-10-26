@@ -1,4 +1,5 @@
 from kafka import KafkaProducer
+from enum import Enum
 
 KAFKA_ADDR = 'kafka:9092'
 
