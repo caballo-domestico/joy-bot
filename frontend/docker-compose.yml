@@ -9,10 +9,9 @@ services:
       - /home/ec2-user/joy-bot/.aws/:/app/.aws:ro
     depends_on:
       - kafka
+
   kafka:
     image: "bitnami/kafka:latest"
-    ports:
-      - "9092:9092"
     environment:
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_BROKER_ID=1
@@ -24,8 +23,16 @@ services:
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
     depends_on:
       - zookeeper
+
   zookeeper:
     image: 'bitnami/zookeeper:latest'
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
- 
+
+  prescription-analyzer:
+    build:
+      context: ./prescription-analyzer
+      dockerfile: Dockerfile.pa
+    depends_on:
+      - kafka
+      - webserver
