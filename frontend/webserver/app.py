@@ -10,16 +10,13 @@ from webserver.dao import PrescriptionsDao, PrescriptionBean, RegistrationBean, 
 from tempfile import TemporaryFile
 from urllib.parse import quote_plus
 from flask_bootstrap import Bootstrap5
-from webserver.pub import Topic, Publisher
 import logging
-import json
 
 logging.basicConfig(level=logging.INFO)
 app = Flask(__name__)
 bootstrap = Bootstrap5(app)
 app.config['SECRET_KEY'] = os.urandom(24).hex()
-os.environ['AWS_DEFAULT_REGION'] = 'us-east-1'
-ALLOWED_EXTENSIONS = {'txt', 'pdf'}
+ALLOWED_EXTENSIONS = {'txt', 'pdf', "png", "jpg", "jpeg"}
 
 @app.route('/', methods=('GET', 'POST'))
 def index():
@@ -52,16 +49,11 @@ def upload_prescription():
         if file and allowed_file(file.filename):
             
             # uploads prescription and its metadata to db
-            fileName = secure_filename(file.filename).replace(" ", "_")        
+            filename = secure_filename(file.filename).replace(" ", "_")        
             username=quote_plus("test")
             dao = PrescriptionsDao()
-            dao.storePrescription(prescriptionBean=PrescriptionBean(username=username, file=file, fileName=fileName))
-
-            # publishes prescription to kafka
-            p = Publisher()
-            metadata=p.send(Topic.PRESCRIPTION_UPLOADED.value, value={"username" : username, "filename" : filename}).get(timeout=30)
-            logging.debug(metadata)
-            p.close()
+            bean = PrescriptionBean(username=username, file=file, fileName=filename)
+            dao.storePrescription(prescriptionBean=bean)
 
             return redirect(f"/list-prescriptions?username={username}")
     return render_template('upload-prescription.html')
@@ -85,7 +77,7 @@ def get_prescription():
     response = send_file(buf, attachment_filename=fileName, as_attachment=True)
     return response
 
-# TODO: remove testing endopint
+# TODO: remove testing endopint when not needed anymore
 #@app.route('/test-publisher', methods=['GET'])
 #def test_publisher():
 #    PUBLISHER = Publisher()

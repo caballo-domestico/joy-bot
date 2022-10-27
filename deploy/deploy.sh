@@ -18,9 +18,6 @@ export SSH_PATH=$1
 set -e
 cd "$rootDir"/demiurges
 ./launch.sh create-ec2-frontend --cfg-path ~/.aws/config --cdls-path ~/.aws/credentials
-#./launch.sh create-upload_prescriptions-resources --cfg-path ~/.aws/config --cdls-path ~/.aws/credentials
-./launch.sh create-user_registration --cfg-path ~/.aws/config --cdls-path ~/.aws/credentials
-
 cd create-ec2-frontend || exit 1
 terraform output -json > "$scriptDir/infrastructure.json"
 
