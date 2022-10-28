@@ -20,7 +20,7 @@ class Dao:
         self.getTableFromDynamoDB(dynamoBean)
         dynamoBean.table.put_item(Item=dynamoBean.item)
     
-class RegistationBean:
+class RegistrationBean:
 
     def __init__(self,email=None, password=None, user_type=None):
         self.email = email
@@ -35,7 +35,7 @@ class RegistrationDao(Dao):
     
     def registerUser(self, registrationBean):
         dynamoBean = DynamoBean(tableName=self.tableName, item={
-            "email": registrationBean.username,
+            "email": registrationBean.email,
             "password": registrationBean.password,
             "user_type": registrationBean.user_type
         })

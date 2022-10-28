@@ -1,9 +1,9 @@
 import grpc
 from concurrent import futures
-from manageusers.dao import RegistrationDao, RegistrationBean
+from dao import RegistrationDao, RegistrationBean
 import time
-import manageusers.users_pb2_grpc as pb2_grpc
-import manageusers.users_pb2 as pb2
+import users_pb2_grpc as pb2_grpc
+import users_pb2 as pb2
 
 
 class RegistrationService(pb2_grpc.RegistrationServicer):
@@ -27,7 +27,7 @@ class RegistrationService(pb2_grpc.RegistrationServicer):
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    pb2_grpc.add_RegistratioServicer_to_server(RegistrationService(), server)
+    pb2_grpc.add_RegistrationServicer_to_server(RegistrationService(), server)
     server.add_insecure_port('[::]:50051')
     server.start()
     server.wait_for_termination()

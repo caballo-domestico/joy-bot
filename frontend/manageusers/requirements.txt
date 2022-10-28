@@ -1,0 +1,4 @@
+boto3>=1.21.33
+awscli>=1.20.0
+grpcio
+grpcio-tools

@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import users_pb2 as users__pb2
+import webserver.users_pb2 as users__pb2
 
 
 class RegistrationStub(object):

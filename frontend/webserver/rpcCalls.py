@@ -8,7 +8,7 @@ class RegistrationClient(object):
     """
 
     def __init__(self):
-        self.host = 'localhost'
+        self.host = 'signin'
         self.server_port = 50051
 
         # instantiate a channel
@@ -18,7 +18,7 @@ class RegistrationClient(object):
         # bind the client and the server
         self.stub = pb2_grpc.RegistrationStub(self.channel)
 
-    def get_user(self, message):
-        message = pb2.Message(message=message)
+    def get_user(self, email, password, user_type):
+        message = pb2.Message(email=email, password=password, user_type=user_type)
         print(f'{message}')
         return self.stub.GetServerResponse(message)
