@@ -5,7 +5,8 @@ import os
 from werkzeug.utils import secure_filename
 import boto3
 from botocore.config import Config
-from webserver.dao import PrescriptionsDao, PrescriptionBean, RegistrationBean, RegistrationDao
+from webserver.rpcCalls import RegistrationClient
+from webserver.dao import PrescriptionsDao, PrescriptionBean
 from tempfile import TemporaryFile
 from urllib.parse import quote_plus
 from flask_bootstrap import Bootstrap5
@@ -31,8 +32,9 @@ def signin():
         email = request.form.get("umail")
         password = request.form.get("upass")
         user_type = request.form.get("utype")
-        registrationDao = RegistrationDao()
-        registrationDao.registerUser(registrationBean=RegistrationBean(email=email, password=password, user_type=user_type))
+        rpc_obj = RegistrationClient()
+        rpc_obj.get_user(email=email, password=password, user_type=user_type)
+
     return render_template('signin.html')
 
 @app.route('/upload-prescription', methods=('GET', 'POST'))

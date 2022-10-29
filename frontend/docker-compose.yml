@@ -1,3 +1,4 @@
+version: "3"
 services:
   webserver:
     build:
@@ -9,6 +10,15 @@ services:
       - ~/.aws/:/root/.aws
     depends_on:
       - kafka
+
+  signin:
+    build:
+      context: ./manageusers
+      dockerfile: Dockerfile
+    ports:
+      - "50051:50051"
+    volumes:
+      - ~/.aws/:/root/.aws
 
   kafka:
     image: "bitnami/kafka:latest"
