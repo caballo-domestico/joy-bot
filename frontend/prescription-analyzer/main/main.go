@@ -27,7 +27,9 @@ func main() {
 
 		log.Debug(fmt.Sprint(pairs))
 
-		// TODO: store prescription data in DynamoDB
+		// store prescription data in DynamoDB
+		storeAnalysis(pairs, msg.Key)
+		log.Debug("prescription analysis ", msg.Key, " stored")
 	}
 
 }
