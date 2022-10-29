@@ -1,7 +1,7 @@
 CC=go build
-SRC=$(shell find . -name "*.go")
+SRC=$(shell find ./main -name "*.go" -a \! -name "*_test.go" )
 binDir=./bin
 
 $(binDir)/debug: $(SRC)
 	mkdir -p $(binDir)
-	$(CC) -v -o $@
+	$(CC) -v -o $@ $^
