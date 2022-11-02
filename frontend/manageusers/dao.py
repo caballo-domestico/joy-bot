@@ -22,10 +22,12 @@ class Dao:
     
 class RegistrationBean:
 
-    def __init__(self,email=None, password=None, user_type=None):
+    def __init__(self,email=None, password=None, user_type=None, phone_num=None, confirmed=None):
         self.email = email
         self.password = password
         self.user_type = user_type
+        self.phone_num = phone_num
+        self.confirmed = confirmed
 
 class RegistrationDao(Dao):
     
@@ -37,6 +39,8 @@ class RegistrationDao(Dao):
         dynamoBean = DynamoBean(tableName=self.tableName, item={
             "email": registrationBean.email,
             "password": registrationBean.password,
-            "user_type": registrationBean.user_type
+            "user_type": registrationBean.user_type,
+            "phone_num": registrationBean.phone_num,
+            "confirmed": registrationBean.confirmed
         })
         self.storeToDynamoDB(dynamoBean)

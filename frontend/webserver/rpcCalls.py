@@ -18,7 +18,7 @@ class RegistrationClient(object):
         # bind the client and the server
         self.stub = pb2_grpc.RegistrationStub(self.channel)
 
-    def get_user(self, email, password, user_type):
-        message = pb2.Message(email=email, password=password, user_type=user_type)
+    def get_user(self, email, password, user_type, phone_num, confirmed):
+        message = pb2.Message(email=email, password=password, user_type=user_type, phone_num=phone_num, confirmed=confirmed)
         print(f'{message}')
         return self.stub.GetServerResponse(message)

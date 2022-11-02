@@ -1,8 +1,10 @@
 from crypt import methods
 import email
-from flask import Flask, render_template, request, flash, send_file, redirect
+from flask import Flask, render_template, request, flash, send_file, redirect, make_response
 import os
 from werkzeug.utils import secure_filename
+from random import randint
+import botocore
 import boto3
 from botocore.config import Config
 from webserver.rpcCalls import RegistrationClient
@@ -28,14 +30,48 @@ def allowed_file(filename):
 
 @app.route('/signin', methods=('GET', 'POST'))
 def signin():
+    auth = 'auth.html'
     if request.method == 'POST':
         email = request.form.get("umail")
         password = request.form.get("upass")
         user_type = request.form.get("utype")
+        phone_num = request.form.get("uphone")
+        resp = user_cookie(email, auth)
         rpc_obj = RegistrationClient()
-        rpc_obj.get_user(email=email, password=password, user_type=user_type)
-
+        rpc_obj.get_user(email=email, password=password, user_type=user_type, phone_num=phone_num, confirmed=False)
+        #sms_sender(phone_num)
+        return resp
     return render_template('signin.html')
+
+@app.route('/auth', methods=('GET', 'POST'))
+def confirmation():
+    if request.method == 'POST':
+        name = request.cookies.get('usermail')
+        logging.info("HERE")
+        logging.info(name)
+        return render_template('index.html')
+    return render_template('auth.html')
+
+def user_cookie(email, page):
+    resp = make_response(render_template(page))
+    resp.set_cookie('usermail', email)
+    return resp 
+
+
+def sms_sender(phone_num):
+    sns = boto3.resource("sns")
+    pin = randint(100000, 999999)
+    message = "This is your account verification pin:{}".format(pin) 
+    sns.meta.client.publish(PhoneNumber=phone_num, Message=message)
+    try:
+        sns.meta.client.publish(PhoneNumber=phone_num, Message=message)
+        logging.info("Published message to %s.", phone_num)
+    except botocore.exceptions.ClientError:
+        logging.exception("Couldn't publish message to %s.", phone_num)
+        raise
+    else:
+        return pin
+
 
 @app.route('/upload-prescription', methods=('GET', 'POST'))
 def upload_prescription():

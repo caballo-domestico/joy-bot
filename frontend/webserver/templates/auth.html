@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block head %}
+{{ super() }}  
+<title>Auth</title>
+{% endblock %}
+{% block content %}
+{{ super() }}
+    <h1>Insert your sms code here</h1>
+    <form action='{{ url_for("confirmation")}}' method="post">
+      <div class="form-group">
+        <label for="exampleInputEmail1">Pin:</label>
+        <input type="text" class="form-control" id="pin" name="upin">
+      </div>
+      <input type=submit class="btn btn-primary" value=Go!> 
+    </form>
+
+{% endblock %}
