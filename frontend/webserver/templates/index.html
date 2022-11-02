@@ -1,30 +1,30 @@
 {% extends "base.html" %}
 {% block head %}
   {{ super() }}
-  <title>Bootstrap Example</title>
+  <title>Joy-Bot</title>
 {% endblock %}
 {% block content %}
   {{ super() }}
   <div class="jumbotron text-center">
-    <h1>My First Bootstrap Page</h1>
-    <p>Resize this responsive page to see the effect!</p> 
+    <h1>Joy-Bot</h1>
+    <p>❤️ Your efficient sweet caretaker ❤️</p> 
   </div>
     
   <div class="container">
     <div class="row">
       <div class="col-sm-4">
-        <h3>Carica la tua prescrisione</h3>
-        <p>Posto per caricare la tua prescrizione</p>
+        <h3>Upload a prescription</h3>
+        <p>Joy-Bot will analyze your prescriptions content to assist you with your medical matters.</p>
         <a class="btn btn-primary" href="/upload-prescription" role="button">Upload</a>
       </div>
       <div class="col-sm-4">
-        <h3>Vedi le tue prescrizioni</h3>
-        <p>Posto per vedere le tue prescrizioni</p>
+        <h3>See your prescriptions</h3>
+        <p>You can navigate your uploaded prescriptions here</p>
         <a class="btn btn-primary" href="/list-prescriptions" role="button">Get List</a>
       </div>
       <div class="col-sm-4">
-        <h3>Registrati</h3>        
-        <p>Affidati alle dolci cure della tua Joy-Bot! </p>
+        <h3>Sign in</h3>        
+        <p>Let your sweet Joy-Bot take care of you! </p>
         <a class="btn btn-primary" href="/signin" role="button">Signin</a>
       </div>
     </div>

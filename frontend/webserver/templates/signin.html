@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% block head %}
 {{ super() }}  
-<title>Login</title>
+<title>Signin</title>
 {% endblock %}
 {% block content %}
 {{ super() }}
-    <h1>Login</h1>
+    <h1>Signin</h1>
     <form action='{{ url_for("signin")}}' method="post">
       <div class="form-group">
         <label for="exampleInputEmail1">Email address</label>
