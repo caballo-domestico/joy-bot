@@ -18,7 +18,7 @@ logging.basicConfig(level=logging.INFO)
 app = Flask(__name__)
 bootstrap = Bootstrap5(app)
 app.config['SECRET_KEY'] = os.urandom(24).hex()
-ALLOWED_EXTENSIONS = {'txt', 'pdf', "png", "jpg", "jpeg"}
+ALLOWED_EXTENSIONS = {'pdf', "png", "jpg", "jpeg"}
 
 @app.route('/', methods=('GET', 'POST'))
 def index():
@@ -82,6 +82,8 @@ def upload_prescription():
         file = request.files['prescription']
         if file.filename == '':
             flash('No selected file', "danger")
+        if file and not allowed_file(file.filename):
+            flash(f'file types allowed: {ALLOWED_EXTENSIONS}', "danger")
         if file and allowed_file(file.filename):
             
             # uploads prescription and its metadata to db
