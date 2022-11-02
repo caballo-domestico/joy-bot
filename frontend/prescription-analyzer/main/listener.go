@@ -34,7 +34,6 @@ func (msg *PrescriptionUploadedMsg) fromJSON(data []byte) error {
 		log.Error(err)
 		return fmt.Errorf("unable to parse json")
 	}
-	log.Debug(fmt.Sprint(jsonMap))
 	msg.Key = jsonMap["key"]
 	msg.Username = jsonMap["username"]
 	msg.S3link = jsonMap["s3link"]
@@ -68,7 +67,6 @@ func listen(out chan *PrescriptionUploadedMsg) {
 				log.Error(err)
 				continue
 			}
-			log.Debug("Parsed message")
 			out <- msg
 		}
 	}
