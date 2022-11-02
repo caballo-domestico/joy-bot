@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-usage="Usage: $0 TERRAFOM_SCRIPT_DIR --cfg-path <path> --cdls-path <path> --ssh-path <path> -p <profile>"
+usage="Usage: $0 TERRAFOM_SCRIPT_DIR --cfg-path <path> --cdls-path <path> -p <profile>"
 
 trap 'echo "\"${BASH_COMMAND}\" command failed with exit code $?."' ERR # who made the mess???
 
