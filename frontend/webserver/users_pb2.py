@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0busers.proto\"=\n\x07Message\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\x12\x11\n\tuser_type\x18\x03 \x01(\t\"#\n\x0fMessageResponse\x12\x10\n\x08received\x18\x01 \x01(\x08\x32\x41\n\x0cRegistration\x12\x31\n\x11GetServerResponse\x12\x08.Message\x1a\x10.MessageResponse\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0busers.proto\"c\n\x07Message\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\x12\x11\n\tuser_type\x18\x03 \x01(\t\x12\x11\n\tphone_num\x18\x04 \x01(\t\x12\x11\n\tconfirmed\x18\x05 \x01(\x08\"#\n\x0fMessageResponse\x12\x10\n\x08received\x18\x01 \x01(\x08\x32\x41\n\x0cRegistration\x12\x31\n\x11GetServerResponse\x12\x08.Message\x1a\x10.MessageResponse\"\x00\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'users_pb2', globals())
@@ -21,9 +21,9 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   _MESSAGE._serialized_start=15
-  _MESSAGE._serialized_end=76
-  _MESSAGERESPONSE._serialized_start=78
-  _MESSAGERESPONSE._serialized_end=113
-  _REGISTRATION._serialized_start=115
-  _REGISTRATION._serialized_end=180
+  _MESSAGE._serialized_end=114
+  _MESSAGERESPONSE._serialized_start=116
+  _MESSAGERESPONSE._serialized_end=151
+  _REGISTRATION._serialized_start=153
+  _REGISTRATION._serialized_end=218
 # @@protoc_insertion_point(module_scope)
