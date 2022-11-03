@@ -115,14 +115,5 @@ def get_prescription():
     response = send_file(buf, attachment_filename=fileName, as_attachment=True)
     return response
 
-# TODO: remove testing endopint when not needed anymore
-#@app.route('/test-publisher', methods=['GET'])
-#def test_publisher():
-#    PUBLISHER = Publisher()
-#    username = "test"
-#    filename = "test.txt"
-#    metadata=PUBLISHER.send(Topic.PRESCRIPTION_UPLOADED.value, value={"username" : username, "filename" : filename}).get(timeout=30)
-#    return "ok"
-
 if __name__ == '__main__':
     app.run(debug=True)
