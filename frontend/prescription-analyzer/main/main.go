@@ -8,7 +8,7 @@ import (
 
 func main() {
 
-	log.SetLevel(log.DebugLevel)
+	log.SetLevel(log.InfoLevel)
 	log.SetReportCaller(true)
 
 	// we spawn a goroutine which notify main thread whenever a message has
