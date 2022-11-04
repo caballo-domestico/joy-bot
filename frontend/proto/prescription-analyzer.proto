@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package panalyzer;
+
+message PatientUsername{
+    string username = 1;
+}
+
+message PrescribedDrug{
+    string name = 1;
+    string frequency = 2;
+}
+
+message PrescribedDrugs {
+    repeated PrescribedDrug prescribedDrugs = 1;
+}
+
+service PrescriptioAnalyzer{
+    rpc getPrescribedDrugs(PatientUsername) returns (PrescribedDrugs);
+}

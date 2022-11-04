@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/segmentio/kafka-go v0.4.35
 	github.com/sirupsen/logrus v1.9.0
+	google.golang.org/protobuf v1.28.1
 )
 
 require (
