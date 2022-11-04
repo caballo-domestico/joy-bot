@@ -42,7 +42,7 @@ func (msg *PrescriptionUploadedMsg) fromJSON(data []byte) error {
 }
 
 func listen(out chan *PrescriptionUploadedMsg) {
-	
+
 	// continously listen for new prescription uploads
 	r := kafka.NewReader(kafka.ReaderConfig{
 		Brokers:   []string{KAFKA_ADDR},
@@ -53,6 +53,7 @@ func listen(out chan *PrescriptionUploadedMsg) {
 	})
 	defer r.Close()
 	r.SetOffset(-1)
+	log.Info("listening for new prescription uploads ...")
 	for {
 		m, err := r.ReadMessage(context.Background())
 		if err != nil {

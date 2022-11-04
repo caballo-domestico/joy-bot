@@ -8,7 +8,7 @@ import (
 
 func main() {
 
-	log.SetLevel(log.InfoLevel)
+	log.SetLevel(log.DebugLevel)
 	log.SetReportCaller(true)
 
 	// we spawn a goroutine which notify main thread whenever a message has
@@ -24,12 +24,12 @@ func main() {
 			log.Error(err)
 			continue
 		}
-
+		log.Info("prescription analyzed")
 		log.Debug(fmt.Sprint(pairs))
 
 		// store prescription data in DynamoDB
 		storeAnalysis(pairs, msg.Key)
-		log.Debug("prescription analysis ", msg.Key, " stored")
+		log.Info("prescription analysis stored")
 	}
 
 }
