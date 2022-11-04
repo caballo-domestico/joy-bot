@@ -1,6 +1,6 @@
 import grpc
-import webserver.users_pb2_grpc as pb2_grpc
-import webserver.users_pb2 as pb2
+import users_pb2_grpc as pb2_grpc
+import users_pb2 as pb2
 
 class RegistrationClient(object):
     """

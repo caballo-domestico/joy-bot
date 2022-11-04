@@ -1,6 +1,6 @@
 import boto3
 from boto3.dynamodb.conditions import Attr
-from webserver.pub import Publisher, Topic
+from pub import Publisher, Topic
 import logging
 
 class PrescribedDrug:

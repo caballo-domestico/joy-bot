@@ -7,14 +7,14 @@ from random import randint
 import botocore
 import boto3
 from botocore.config import Config
-from webserver.rpcCalls import RegistrationClient
-from webserver.dao import PrescriptionsDao, PrescriptionBean
+from rpcCalls import RegistrationClient
+from dao import PrescriptionsDao, PrescriptionBean
 from tempfile import TemporaryFile
 from urllib.parse import quote_plus
 from flask_bootstrap import Bootstrap5
 import logging
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
 bootstrap = Bootstrap5(app)
 app.config['SECRET_KEY'] = os.urandom(24).hex()
@@ -116,4 +116,4 @@ def get_prescription():
     return response
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0")
