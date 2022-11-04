@@ -14,13 +14,12 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1bprescription-analyzer.proto\x12\tpanalyzer\"#\n\x0fPatientUsername\x12\x10\n\x08username\x18\x01 \x01(\t\"1\n\x0ePrescribedDrug\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x11\n\tfrequency\x18\x02 \x01(\t\"E\n\x0fPrescribedDrugs\x12\x32\n\x0fprescribedDrugs\x18\x01 \x03(\x0b\x32\x19.panalyzer.PrescribedDrug2c\n\x13PrescriptioAnalyzer\x12L\n\x12getPrescribedDrugs\x12\x1a.panalyzer.PatientUsername\x1a\x1a.panalyzer.PrescribedDrugsb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1bprescription-analyzer.proto\x12\tpanalyzer\"#\n\x0fPatientUsername\x12\x10\n\x08username\x18\x01 \x01(\t\"1\n\x0ePrescribedDrug\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x11\n\tfrequency\x18\x02 \x01(\t2d\n\x13PrescriptioAnalyzer\x12M\n\x12getPrescribedDrugs\x12\x1a.panalyzer.PatientUsername\x1a\x19.panalyzer.PrescribedDrug0\x01\x62\x06proto3')
 
 
 
 _PATIENTUSERNAME = DESCRIPTOR.message_types_by_name['PatientUsername']
 _PRESCRIBEDDRUG = DESCRIPTOR.message_types_by_name['PrescribedDrug']
-_PRESCRIBEDDRUGS = DESCRIPTOR.message_types_by_name['PrescribedDrugs']
 PatientUsername = _reflection.GeneratedProtocolMessageType('PatientUsername', (_message.Message,), {
   'DESCRIPTOR' : _PATIENTUSERNAME,
   '__module__' : 'prescription_analyzer_pb2'
@@ -35,13 +34,6 @@ PrescribedDrug = _reflection.GeneratedProtocolMessageType('PrescribedDrug', (_me
   })
 _sym_db.RegisterMessage(PrescribedDrug)
 
-PrescribedDrugs = _reflection.GeneratedProtocolMessageType('PrescribedDrugs', (_message.Message,), {
-  'DESCRIPTOR' : _PRESCRIBEDDRUGS,
-  '__module__' : 'prescription_analyzer_pb2'
-  # @@protoc_insertion_point(class_scope:panalyzer.PrescribedDrugs)
-  })
-_sym_db.RegisterMessage(PrescribedDrugs)
-
 _PRESCRIPTIOANALYZER = DESCRIPTOR.services_by_name['PrescriptioAnalyzer']
 if _descriptor._USE_C_DESCRIPTORS == False:
 
@@ -50,8 +42,6 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _PATIENTUSERNAME._serialized_end=77
   _PRESCRIBEDDRUG._serialized_start=79
   _PRESCRIBEDDRUG._serialized_end=128
-  _PRESCRIBEDDRUGS._serialized_start=130
-  _PRESCRIBEDDRUGS._serialized_end=199
-  _PRESCRIPTIOANALYZER._serialized_start=201
-  _PRESCRIPTIOANALYZER._serialized_end=300
+  _PRESCRIPTIOANALYZER._serialized_start=130
+  _PRESCRIPTIOANALYZER._serialized_end=230
 # @@protoc_insertion_point(module_scope)

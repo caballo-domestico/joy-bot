@@ -2,10 +2,10 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import users_pb2 as users__pb2
+import prescription_analyzer_pb2 as prescription__analyzer__pb2
 
 
-class RegistrationStub(object):
+class PrescriptioAnalyzerStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -14,42 +14,42 @@ class RegistrationStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.GetServerResponse = channel.unary_unary(
-                '/Registration/GetServerResponse',
-                request_serializer=users__pb2.Message.SerializeToString,
-                response_deserializer=users__pb2.MessageResponse.FromString,
+        self.getPrescribedDrugs = channel.unary_stream(
+                '/panalyzer.PrescriptioAnalyzer/getPrescribedDrugs',
+                request_serializer=prescription__analyzer__pb2.PatientUsername.SerializeToString,
+                response_deserializer=prescription__analyzer__pb2.PrescribedDrug.FromString,
                 )
 
 
-class RegistrationServicer(object):
+class PrescriptioAnalyzerServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def GetServerResponse(self, request, context):
+    def getPrescribedDrugs(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
 
-def add_RegistrationServicer_to_server(servicer, server):
+def add_PrescriptioAnalyzerServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'GetServerResponse': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetServerResponse,
-                    request_deserializer=users__pb2.Message.FromString,
-                    response_serializer=users__pb2.MessageResponse.SerializeToString,
+            'getPrescribedDrugs': grpc.unary_stream_rpc_method_handler(
+                    servicer.getPrescribedDrugs,
+                    request_deserializer=prescription__analyzer__pb2.PatientUsername.FromString,
+                    response_serializer=prescription__analyzer__pb2.PrescribedDrug.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'Registration', rpc_method_handlers)
+            'panalyzer.PrescriptioAnalyzer', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
  # This class is part of an EXPERIMENTAL API.
-class Registration(object):
+class PrescriptioAnalyzer(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def GetServerResponse(request,
+    def getPrescribedDrugs(request,
             target,
             options=(),
             channel_credentials=None,
@@ -59,8 +59,8 @@ class Registration(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Registration/GetServerResponse',
-            users__pb2.Message.SerializeToString,
-            users__pb2.MessageResponse.FromString,
+        return grpc.experimental.unary_stream(request, target, '/panalyzer.PrescriptioAnalyzer/getPrescribedDrugs',
+            prescription__analyzer__pb2.PatientUsername.SerializeToString,
+            prescription__analyzer__pb2.PrescribedDrug.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

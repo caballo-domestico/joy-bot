@@ -11,10 +11,6 @@ message PrescribedDrug{
     string frequency = 2;
 }
 
-message PrescribedDrugs {
-    repeated PrescribedDrug prescribedDrugs = 1;
-}
-
 service PrescriptioAnalyzer{
-    rpc getPrescribedDrugs(PatientUsername) returns (PrescribedDrugs);
+    rpc getPrescribedDrugs(PatientUsername) returns (stream PrescribedDrug);
 }
