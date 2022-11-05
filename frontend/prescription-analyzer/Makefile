@@ -6,7 +6,7 @@ grpc_suffix=_grpc.pb.go
 
 srcDir=./main
 src_protos_dir=../proto
-generatedDir=$(srcDir)/proto
+generatedDir=$(srcDir)/rpc
 basenames=$(shell basename -a $(src_protos) 2>/dev/null | awk -F . '{print $$1}')
 generated_pb=$(addprefix $(generatedDir)/, $(addsuffix $(pb_suffix), $(basenames)))
 generated_grpc=$(addprefix $(generatedDir)/, $(addsuffix $(grpc_suffix), $(basenames)))

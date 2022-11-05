@@ -1,4 +1,4 @@
-package main
+package dao
 
 type PrescribedDrug struct {
 	Name      string // name of the prescribed drug

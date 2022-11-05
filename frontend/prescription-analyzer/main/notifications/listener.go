@@ -1,4 +1,4 @@
-package main
+package notifications
 
 import (
 	"context"
@@ -41,7 +41,7 @@ func (msg *PrescriptionUploadedMsg) fromJSON(data []byte) error {
 	return err
 }
 
-func listen(out chan *PrescriptionUploadedMsg) {
+func Listen(out chan *PrescriptionUploadedMsg) {
 
 	// continously listen for new prescription uploads
 	r := kafka.NewReader(kafka.ReaderConfig{

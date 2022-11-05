@@ -1,4 +1,4 @@
-package main
+package dao
 
 import (
 	"context"
@@ -54,7 +54,7 @@ func toTimestamp(t time.Time) int64 {
 	return t.Unix()
 }
 
-func storeAnalysis(relationships map[string]string, prescriptionId string) error {
+func StoreAnalysis(relationships map[string]string, prescriptionId string) error {
 
 	client, err := newDynamoDBClient()
 	if err != nil {
@@ -118,7 +118,7 @@ func storeAnalysis(relationships map[string]string, prescriptionId string) error
 	return nil
 }
 
-func loadPrescribedDrugsByPatient(patientName string) ([]*PrescribedDrug, error) {
+func LoadPrescribedDrugs(patientName string) ([]*PrescribedDrug, error) {
 
 	prescribedDrugs := []*PrescribedDrug{}
 

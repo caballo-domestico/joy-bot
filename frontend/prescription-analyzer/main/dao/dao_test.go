@@ -1,4 +1,4 @@
-package main
+package dao
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ func TestLoadPrescribedDrugsByPatient(t *testing.T) {
 	log.SetLevel(log.DebugLevel)
 	patientName := "test"
 
-	drugs, err := loadPrescribedDrugsByPatient(patientName)
+	drugs, err := LoadPrescribedDrugs(patientName)
 	if err != nil {
 		log.Error(err)
 		t.FailNow()
