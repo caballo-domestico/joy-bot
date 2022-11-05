@@ -16,9 +16,6 @@ const (
 	PRESCRIPTION_UPLOADED Topic = "prescription_uploaded"
 )
 
-// broker address
-const KAFKA_ADDR string = "kafka:9092"
-
 type PrescriptionUploadedMsg struct {
 	Key      string // key used to retrieve the prescription from S3
 	Username string // username of the user who uploaded the prescription
@@ -41,12 +38,12 @@ func (msg *PrescriptionUploadedMsg) fromJSON(data []byte) error {
 	return err
 }
 
-func Listen(out chan *PrescriptionUploadedMsg) {
+func Listen(out chan *PrescriptionUploadedMsg, topic Topic, kafkaAddr string) {
 
 	// continously listen for new prescription uploads
 	r := kafka.NewReader(kafka.ReaderConfig{
-		Brokers:   []string{KAFKA_ADDR},
-		Topic:     string(PRESCRIPTION_UPLOADED),
+		Brokers:   []string{kafkaAddr},
+		Topic:     string(topic),
 		Partition: 0,
 		MinBytes:  10e3, // 10KB
 		MaxBytes:  10e6, // 10MB
@@ -61,14 +58,17 @@ func Listen(out chan *PrescriptionUploadedMsg) {
 		} else {
 			log.Debug("Received message in topic ", string(m.Topic), "\n")
 
-			// parses prescription uploaded notification
-			msg := new(PrescriptionUploadedMsg)
-			err := msg.fromJSON(m.Value)
-			if err != nil {
-				log.Error(err)
-				continue
+			switch topic{
+			case PRESCRIPTION_UPLOADED:
+				// parses prescription uploaded notification
+				msg := new(PrescriptionUploadedMsg)
+				err := msg.fromJSON(m.Value)
+				if err != nil {
+					log.Error(err)
+					continue
+				}
+				out <- msg
 			}
-			out <- msg
 		}
 	}
 }

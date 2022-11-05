@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 
 	"joybot/panalyzer/main/analyzer"
@@ -15,12 +16,13 @@ func main() {
 	log.SetLevel(log.DebugLevel)
 	log.SetReportCaller(true)
 
-	
-	
+	kafkaAddr := flag.String("kafka-addr", "kafka:9092", "kafka_address:port")
+	flag.Parse()
+
 	// we spawn a goroutine which notify main thread whenever a message has
 	// been posted on topic
 	msgs := make(chan *notifications.PrescriptionUploadedMsg)
-	go notifications.Listen(msgs)
+	go notifications.Listen(msgs, notifications.PRESCRIPTION_UPLOADED, *kafkaAddr)
 
 	for {
 		msg := <-msgs
