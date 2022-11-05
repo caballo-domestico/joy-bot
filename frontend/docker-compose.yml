@@ -11,6 +11,7 @@ services:
     depends_on:
       - kafka
       - signin
+      - prescription-analyzer
 
   signin:
     build:
@@ -48,5 +49,4 @@ services:
       - ~/.aws/:/root/.aws
     depends_on:
       - kafka
-      - webserver
 
