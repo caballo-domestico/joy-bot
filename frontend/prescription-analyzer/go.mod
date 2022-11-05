@@ -1,4 +1,4 @@
-module joy-bot/prescription-analyzer
+module joybot/panalyzer
 
 go 1.18
 

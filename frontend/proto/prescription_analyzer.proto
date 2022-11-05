@@ -11,6 +11,6 @@ message PrescribedDrug{
     string frequency = 2;
 }
 
-service PrescriptioAnalyzer{
+service PrescriptionAnalyzer{
     rpc getPrescribedDrugs(PatientUsername) returns (stream PrescribedDrug);
 }
