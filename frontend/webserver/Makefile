@@ -16,9 +16,9 @@ $(generated_pb): $(generatedDir)/%$(pb_suffix): $(src_protos_dir)/%.proto
 	protoc -I=$(src_protos_dir) --python_out=$(generatedDir) $<
 
 $(generated_grpc): $(generatedDir)/%$(grpc_suffix): $(src_protos_dir)/%.proto 
-	python -m grpc_tools.protoc -I=$(src_protos_dir) --pyi_out=$(generatedDir) --grpc_python_out=$(generatedDir) $<
+	python -m grpc_tools.protoc -I=$(src_protos_dir) --grpc_python_out=$(generatedDir) $<
 
 $(generated_pyi): $(generatedDir)/%$(pyi_suffix): $(src_protos_dir)/%.proto
-	python -m grpc_tools.protoc -I=$(src_protos_dir) --pyi_out=$(generatedDir) --grpc_python_out=$(generatedDir) $<
+	python -m grpc_tools.protoc -I=$(src_protos_dir) --pyi_out=$(generatedDir)  $<
 
 stubs: $(generated_pb) $(generated_grpc) $(generated_pyi)
