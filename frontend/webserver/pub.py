@@ -5,7 +5,11 @@ import time
 import logging
 import json
 
-KAFKA_ADDR = 'kafka:9092'
+KAFKA_ADDR = None
+
+def setKafkaAddr(addr, port):
+    global KAFKA_ADDR
+    KAFKA_ADDR = f"{addr}:{port}"
 
 class Topic(Enum):
     PRESCRIPTION_UPLOADED = 'prescription_uploaded'

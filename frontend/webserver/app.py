@@ -13,6 +13,8 @@ from tempfile import TemporaryFile
 from urllib.parse import quote_plus
 from flask_bootstrap import Bootstrap5
 import logging
+import argparse
+import pub
 
 logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
@@ -116,4 +118,61 @@ def get_prescription():
     return response
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0")
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--kafka_port",
+        default="9092",
+        help="Port of the Kafka server.",
+        type=int,
+        )
+    parser.add_argument(
+        "--kafka_addr",
+        default="kafka",
+        help="Address of the Kafka server.",
+        )
+    parser.add_argument(
+        "--grpc_panalyzer_addr",
+        default="prescription-analyzer",
+        help="Address of the prescription analyzer gRPC server.",
+        )
+    parser.add_argument(
+        "--grpc_panalyzer_port",
+        default="50051",
+        help="port of the prescription analyzer gRPC server",
+        type=int,
+        )
+    parser.add_argument(
+        "--grpc_manageuser_addr",
+        default="manage-user",
+        help="Address of the manage user gRPC server.",
+        )
+    parser.add_argument(
+        "--grpc_manageuser_port",
+        default="50051",
+        help="port of the manage user gRPC server",
+        type=int,
+        )
+    parser.add_argument(
+        "--host_addr",
+        default="0.0.0.0",
+        help="Address of this webserver.",
+        )
+    parser.add_argument(
+        "--host_port",
+        default="5000",
+        help="Port of this webserver.",
+        type=int,
+        )
+    args = parser.parse_args()
+
+    HOST_ADDR = args.host_addr
+    HOST_PORT = args.host_port
+    GRPC_MANAGEUSER_ADDR = args.grpc_manageuser_addr
+    GRPC_MANAGEUSER_PORT = args.grpc_manageuser_port
+    GRPC_PANALYZER_ADDR = args.grpc_panalyzer_addr
+    GRPC_PANALYZER_PORT = args.grpc_panalyzer_port
+
+    pub.setKafkaAddr(addr=args.kafka_addr, port=args.kafka_port)
+
+    app.run(debug=True, host=HOST_ADDR)
