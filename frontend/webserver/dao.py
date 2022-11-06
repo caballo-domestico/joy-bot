@@ -1,7 +1,17 @@
 import boto3
 from boto3.dynamodb.conditions import Attr
-from webserver.pub import Publisher, Topic
+from pub import Publisher, Topic
 import logging
+
+class PrescribedDrug:
+    def __init__(self, name=None, frequency=None):
+        self.name = name
+        self.frequency = frequency
+
+class PrescribedDrugsBean:
+    def __init__(self, patientName=None, prescribedDrugs=None):
+        self.patientName = patientName
+        self.prescribedDrugs = prescribedDrugs
 
 class FileBean:
 

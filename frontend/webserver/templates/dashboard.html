@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block head %}
+{{ super() }}
+<title>Dashboard</title>
+{% endblock %}
+
+{% block content %}
+{{ super() }}
+
+<h1>Dashboard of {{ username }}</h1>
+
+<div class="container">
+    <h2> Prescribed drugs </h2>
+
+    <div class="container">
+        
+        <!-- list prescribed drug along with their frequencies
+             for requested username, as a Bootstrap grid -->
+
+        <div class="row">
+            <div class="col">
+                <p> Drug name </p>
+            </div>
+            <div class="col">
+                <p> Frequency </p>
+            </div>
+        </div>
+        {% for pd in prescribedDrugs: %}
+            <div class="row">
+                <div class="col">
+                    {{ pd.name }}
+                </div>
+                <div class="col">
+                    {{ pd.frequency }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

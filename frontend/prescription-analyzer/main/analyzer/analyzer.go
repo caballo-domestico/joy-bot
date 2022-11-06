@@ -1,4 +1,4 @@
-package main
+package analyzer
 
 import (
 	"context"
@@ -105,7 +105,7 @@ func (blocks TextractBlocks) getRelationships() (map[string]string, error) {
 	return relationshipsMap, nil
 }
 
-func analyzeS3Object(bucketName string, objectName string) (map[string]string, error) {
+func AnalyzeS3Object(bucketName string, objectName string) (map[string]string, error) {
 
 	// Loads aws configs and credentials from default files in ~/.aws .
 	// These configs are needed from aws clients

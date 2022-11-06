@@ -1,4 +1,4 @@
-package main
+package analyzer
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ func TestAnalyzeS3Object(t *testing.T) {
 	bucketName := "joy-bot.prescriptions"
 	prescritpionName := "test_Screenshot_20221016_200040.png"
 
-	relationships, err := analyzeS3Object(bucketName, prescritpionName)
+	relationships, err := AnalyzeS3Object(bucketName, prescritpionName)
 	if err != nil {
 		t.Error(err)
 	}
