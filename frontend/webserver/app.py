@@ -7,7 +7,7 @@ from random import randint
 import botocore
 import boto3
 from botocore.config import Config
-from rpcCalls import RegistrationClient
+from rpcCalls import RegistrationClient, PrescribedDrugsDao
 from dao import PrescriptionsDao, PrescriptionBean
 from tempfile import TemporaryFile
 from urllib.parse import quote_plus
@@ -117,6 +117,13 @@ def get_prescription():
     response = send_file(buf, attachment_filename=fileName, as_attachment=True)
     return response
 
+@app.route('/dashboard', methods=['GET'])
+def dashboard():
+    username = request.args.get('username', type=str)
+    dao = PrescribedDrugsDao(GRPC_PANALYZER_ADDR, GR)
+    prescribedDrugs = dao.getPrescribedDrugs(username)
+    return render_template('dashboard.html', prescribedDrugs=prescribedDrugs, username=username)
+    
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()

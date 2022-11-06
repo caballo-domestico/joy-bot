@@ -7,6 +7,7 @@ import (
 	"joybot/panalyzer/main/analyzer"
 	"joybot/panalyzer/main/dao"
 	"joybot/panalyzer/main/notifications"
+	"joybot/panalyzer/main/rpc"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -17,12 +18,17 @@ func main() {
 	log.SetReportCaller(true)
 
 	kafkaAddr := flag.String("kafka-addr", "kafka:9092", "kafka_address:port")
+	rpcAddr := flag.String("rpc-addr", "50051", "rpc_address:port")
+	rpcNetwork := flag.String("rpc-network", "tcp", "same network values as go net.Listen")
 	flag.Parse()
 
 	// we spawn a goroutine which notify main thread whenever a message has
 	// been posted on topic
 	msgs := make(chan *notifications.PrescriptionUploadedMsg)
 	go notifications.Listen(msgs, notifications.PRESCRIPTION_UPLOADED, *kafkaAddr)
+
+	// goroutine which handles incoming rpc requests
+	go rpc.Listen(*rpcNetwork, *rpcAddr)
 
 	for {
 		msg := <-msgs

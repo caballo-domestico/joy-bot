@@ -7,4 +7,4 @@ COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 COPY . .
 RUN go build -v -o /usr/local/bin/app/ ./...
-CMD ["/usr/local/bin/app/main", "--kafka-addr=kafka:9092"]
+CMD ["/usr/local/bin/app/main", "--kafka-addr=kafka:9092", "--rpc-addr=prescription-analyzer:50051", "--rpc-network=tcp"]
