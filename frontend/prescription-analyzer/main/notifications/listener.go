@@ -50,7 +50,7 @@ func Listen(out chan *PrescriptionUploadedMsg, topic Topic, kafkaAddr string) {
 	})
 	defer r.Close()
 	r.SetOffset(-1)
-	log.Info("listening for new prescription uploads ...")
+	log.Info("started listener for new prescription uploads")
 	for {
 		m, err := r.ReadMessage(context.Background())
 		if err != nil {
@@ -58,7 +58,7 @@ func Listen(out chan *PrescriptionUploadedMsg, topic Topic, kafkaAddr string) {
 		} else {
 			log.Debug("Received message in topic ", string(m.Topic), "\n")
 
-			switch topic{
+			switch topic {
 			case PRESCRIPTION_UPLOADED:
 				// parses prescription uploaded notification
 				msg := new(PrescriptionUploadedMsg)

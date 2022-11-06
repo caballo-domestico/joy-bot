@@ -142,7 +142,6 @@ func LoadPrescribedDrugs(patientName string) ([]*PrescribedDrug, error) {
 		KEY_DATE.toExpressionAttributeName(),
 		KEY_DATE.toExpressionAttributeValue(),
 	)
-	log.Debug(filterExpression)
 	request := &dynamodb.ScanInput{
 		TableName:            &tableName,
 		ProjectionExpression: &projectionExpression,
