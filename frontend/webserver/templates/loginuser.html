@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block head %}
+{{ super() }}  
+<title>loginuser</title>
+{% endblock %}
+{% block content %}
+{{ super() }}
+    <h1>loginuser</h1>
+    <form action='{{ url_for("login")}}' method="post">
+      <div class="form-group">
+        <label>Phone number</label>
+        <input type="text" class="form-control" id="phone" name="uphone" placeholder="Enter phone number" required>
+      </div>
+      <div class="form-group">
+        <label for="exampleInputPassword1">Password</label>
+        <input type="password" class="form-control" id="password" name="upass" placeholder="Password" required>
+      </div>
+      <input type=submit class="btn btn-primary" value=login> 
+    </form>
+    <form action='{{ url_for("signin")}}' method="get">
+      <div>Not a member?</div>
+      <input type=submit class="btn btn-primary" value=signin> 
+    </form>
+
+{% endblock %}

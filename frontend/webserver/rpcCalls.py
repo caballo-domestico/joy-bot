@@ -21,4 +21,12 @@ class RegistrationClient(object):
     def get_user(self, email, password, user_type, phone_num, confirmed):
         message = pb2.Message(email=email, password=password, user_type=user_type, phone_num=phone_num, confirmed=confirmed)
         print(f'{message}')
-        return self.stub.GetServerResponse(message)
+        return self.stub.UsersRegistration(message)
+
+    def manage_pin(self, phone, db_op, real_user, pin=0):
+        message = pb2.PinMessage(phone=phone, pin=pin, db_op=db_op, real_user=real_user)
+        return self.stub.PinRegistration(message)
+    
+    def log_user(self, phone_num):
+        message = pb2.LoginMessage(phone_num=phone_num)
+        return self.stub.Login(message)

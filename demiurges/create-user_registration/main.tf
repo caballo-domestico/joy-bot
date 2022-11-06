@@ -15,11 +15,22 @@ provider "aws" {
 
 resource "aws_dynamodb_table" "users" {
   name           = "Users"
-  hash_key       = "email"
+  hash_key       = "phone_num"
   read_capacity  = 5
   write_capacity = 5
   attribute {
-    name = "email"
+    name = "phone_num"
+    type = "S"
+  }
+}
+
+resource "aws_dynamodb_table" "pin" {
+  name           = "Pin"
+  hash_key       = "phone"
+  read_capacity  = 5
+  write_capacity = 5
+  attribute {
+    name = "phone"
     type = "S"
   }
 }

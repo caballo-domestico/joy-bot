@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block head %}
 {{ super() }}  
-<title>Auth</title>
+<title>Auth1</title>
 {% endblock %}
 {% block content %}
 {{ super() }}
@@ -9,7 +9,7 @@
     <form action='{{ url_for("confirmation")}}' method="post">
       <div class="form-group">
         <label for="exampleInputEmail1">Pin:</label>
-        <input type="text" class="form-control" id="pin" name="upin">
+        <input type="text" class="form-control" id="pin" name="upin" required>
       </div>
       <input type=submit class="btn btn-primary" value=Go!> 
     </form>

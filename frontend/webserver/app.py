@@ -22,7 +22,7 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', "png", "jpg", "jpeg"}
 
 @app.route('/', methods=('GET', 'POST'))
 def index():
-    return render_template('index.html')
+    return render_template('loginuser.html')
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -36,36 +36,90 @@ def signin():
         password = request.form.get("upass")
         user_type = request.form.get("utype")
         phone_num = request.form.get("uphone")
-        resp = user_cookie(email, auth)
+        cookies = {
+            'userphone':phone_num, 
+            'count':'1'
+        }
+        resp = user_cookie(dict=cookies, page=auth)
         rpc_obj = RegistrationClient()
         rpc_obj.get_user(email=email, password=password, user_type=user_type, phone_num=phone_num, confirmed=False)
-        #sms_sender(phone_num)
+        sms_sender(phone_num)
         return resp
     return render_template('signin.html')
 
 @app.route('/auth', methods=('GET', 'POST'))
 def confirmation():
+    rpc_obj = RegistrationClient()
+    logging.info("TRY %s.", str(request.cookies.get('count')))
     if request.method == 'POST':
-        name = request.cookies.get('usermail')
-        logging.info("HERE")
-        logging.info(name)
-        return render_template('index.html')
+        op = 'get'
+        pin = request.form.get("upin")
+        phone_num = request.cookies.get('userphone')
+        response = rpc_obj.manage_pin(phone=phone_num, db_op=op, real_user=False)
+        db_pin = response.pin
+
+        if(request.cookies.get('count')>='3'):
+            op="rm"
+            rpc_obj.manage_pin(phone=phone_num, db_op=op, real_user=False)
+            return render_template('error.html')
+
+        elif(str(pin) == str(db_pin)):
+            op = "rm"
+            page='home.html'
+            counter = {
+                'count': '0'
+            }     
+            rpc_obj.manage_pin(phone=phone_num, db_op=op, real_user=True)
+            ret = user_cookie(dict=counter, page=page, age=0)
+            return ret
+        else:
+            page = 'auth.html' 
+            value = int(request.cookies.get('count'))+1
+            counter = {
+                'count': str(value)
+            }     
+            ret = user_cookie(dict=counter, page=page)
+            return ret
     return render_template('auth.html')
 
-def user_cookie(email, page):
+@app.route('/loginuser', methods=('GET', 'POST'))
+def login():
+    if request.method == 'POST':
+        rpc_obj = RegistrationClient()
+        response = rpc_obj.log_user(request.form.get('uphone'))
+        db_pass = response.password
+        logging.info('DB_PASS %s', db_pass)
+        logging.info('RESP_PASS %s', request.form.get('upass'))
+        if(db_pass == request.form.get('upass')):
+            logging.info('RESP_PASS_T %s', type(request.form.get('upass')))
+            logging.info('DB_PASS_T %s', type(db_pass))
+
+            return(render_template('home.html'))
+        else:
+            flash('Invalid credentials')
+    return render_template('loginuser.html')
+
+
+def user_cookie(dict, page, age=None):
     resp = make_response(render_template(page))
-    resp.set_cookie('usermail', email)
+    for i in dict:
+        resp.set_cookie(i, dict[i], max_age=age)
     return resp 
 
 
+
 def sms_sender(phone_num):
-    sns = boto3.resource("sns")
+    #sns = boto3.resource("sns")
+    op = 'add'
     pin = randint(100000, 999999)
     message = "This is your account verification pin:{}".format(pin) 
-    sns.meta.client.publish(PhoneNumber=phone_num, Message=message)
+    #sns.meta.client.publish(PhoneNumber=phone_num, Message=message)
+    rpc_obj = RegistrationClient()
     try:
-        sns.meta.client.publish(PhoneNumber=phone_num, Message=message)
+        #sns.meta.client.publish(PhoneNumber=phone_num, Message=message)
         logging.info("Published message to %s.", phone_num)
+        rpc_obj.manage_pin(phone=phone_num, pin=pin, db_op=op, real_user=False)
+
     except botocore.exceptions.ClientError:
         logging.exception("Couldn't publish message to %s.", phone_num)
         raise
