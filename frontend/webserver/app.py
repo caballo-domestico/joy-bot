@@ -39,7 +39,7 @@ def signin():
         user_type = request.form.get("utype")
         phone_num = request.form.get("uphone")
         resp = user_cookie(email, auth)
-        rpc_obj = RegistrationClient()
+        rpc_obj = RegistrationClient(GRPC_MANAGEUSER_ADDR, GRPC_MANAGEUSER_PORT)
         rpc_obj.get_user(email=email, password=password, user_type=user_type, phone_num=phone_num, confirmed=False)
         #sms_sender(phone_num)
         return resp
@@ -151,7 +151,7 @@ if __name__ == '__main__':
         )
     parser.add_argument(
         "--grpc_manageuser_addr",
-        default="manage-user",
+        default="signin",
         help="Address of the manage user gRPC server.",
         )
     parser.add_argument(
