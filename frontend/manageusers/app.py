@@ -8,6 +8,7 @@ from dao import RegistrationDao, RegistrationBean, PinBean, PinDao
 import time
 import users_pb2_grpc as pb2_grpc
 import users_pb2 as pb2
+import argparse
 
 
 logging.basicConfig(level=logging.INFO)
@@ -68,10 +69,16 @@ class RegistrationService(pb2_grpc.RegistrationServicer):
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     pb2_grpc.add_RegistrationServicer_to_server(RegistrationService(), server)
-    server.add_insecure_port('[::]:50051')
+    server.add_insecure_port(GRPC_ADDR_PORT)
     server.start()
     server.wait_for_termination()
 
 
 if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--grpc_addr_port', default="signin:50051", help='addr:portNum for receive grpc requests')
+    args = parser.parse_args()
+
+    GRPC_ADDR_PORT = args.grpc_addr_port
     serve()

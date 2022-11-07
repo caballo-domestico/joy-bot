@@ -205,7 +205,7 @@ def dashboard():
         return render_template('loginuser.html')
 
     username = request.args.get('username', type=str)
-    dao = PrescribedDrugsDao(GRPC_PANALYZER_ADDR, GR)
+    dao = PrescribedDrugsDao(GRPC_PANALYZER_ADDR, GRPC_PANALYZER_PORT)
     prescribedDrugs = dao.getPrescribedDrugs(username)
     return render_template('dashboard.html', prescribedDrugs=prescribedDrugs, username=username)
     
