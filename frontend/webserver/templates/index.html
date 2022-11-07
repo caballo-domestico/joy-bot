@@ -7,26 +7,44 @@
   {{ super() }}
   <div class="jumbotron text-center">
     <h1>Joy-Bot</h1>
-    <p>❤️ Your efficient sweet caretaker ❤️</p> 
+    <p>❤️ Your distributed sweet caretaker ❤️</p> 
   </div>
-    
+
+  <hr>
+
   <div class="container">
     <div class="row">
-      <div class="col-sm-4">
+      <div class="col">
         <h3>Upload a prescription</h3>
         <p>Joy-Bot will analyze your prescriptions content to assist you with your medical matters.</p>
         <a class="btn btn-primary" href="/upload-prescription" role="button">Upload</a>
       </div>
-      <div class="col-sm-4">
+      <div class="col">
         <h3>See your prescriptions</h3>
         <p>You can navigate your uploaded prescriptions here</p>
         <a class="btn btn-primary" href="/list-prescriptions" role="button">Get List</a>
       </div>
-      <div class="col-sm-4">
+      <div class="col">
+        <h3>Dashboard</h3>        
+        <p>A personal space where you can find your prescribed drugs among other things </p>
+        <a class="btn btn-primary" href="/dashboard" role="button">Go to Dashboard</a>
+      </div>
+      <div class="col">
         <h3>Sign in</h3>        
         <p>Let your sweet Joy-Bot take care of you! </p>
         <a class="btn btn-primary" href="/signin" role="button">Signin</a>
       </div>
     </div>
   </div>
+
+  <p></p>
+
+  <div class="row d-flex justify-content-center" hidden="true">
+    <div class="col-sm-2">
+      <picture>
+        <img src="https://preview.redd.it/dvgd9py8rcj51.jpg?auto=webp&s=d6c44d5783382fc70bcbfacb8ffe73c47cd2c726" class="img-thumbnail border" onclick="changeVisibility('easter-egg')" id="easter-egg" hidden="true">
+      </picture>
+    </div>
+  </div>
+    
 {% endblock %}
