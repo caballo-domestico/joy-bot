@@ -5,6 +5,17 @@
 {% endblock %}
 {% block content %}
   {{ super() }}
+  <nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">Joybot</a>
+      </div>
+      <ul class="nav navbar-nav navbar-right">
+        <li><form action='{{ url_for("logout")}}' method="get"><input type=submit class="btn btn-primary" value=logout></form></li>
+      </ul>
+    </div>
+  </nav>
+
   <div class="jumbotron text-center">
     <h1>Joy-Bot</h1>
     <p>❤️ Your efficient sweet caretaker ❤️</p> 

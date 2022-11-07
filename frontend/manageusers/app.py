@@ -62,8 +62,7 @@ class RegistrationService(pb2_grpc.RegistrationServicer):
 
         registrationDao = RegistrationDao()
         response = registrationDao.getUser(registrationBean=RegistrationBean(phone_num=phone))
-        logging.info('DATABASEEEEEEEEE %s', response)
-        return pb2.LoginResponse(password=response['Item']['password']['S'])
+        return pb2.LoginResponse(password=response['Item']['password']['S'], confirmed=response['Item']['confirmed']['BOOL'])
 
 
 def serve():

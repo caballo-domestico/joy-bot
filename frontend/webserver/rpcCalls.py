@@ -30,11 +30,11 @@ class RegistrationClient(Client):
         return self.stub.UsersRegistration(message)
 
     def manage_pin(self, phone, db_op, real_user, pin=0):
-        message = pb2.PinMessage(phone=phone, pin=pin, db_op=db_op, real_user=real_user)
+        message = users_pb2.PinMessage(phone=phone, pin=pin, db_op=db_op, real_user=real_user)
         return self.stub.PinRegistration(message)
     
     def log_user(self, phone_num):
-        message = pb2.LoginMessage(phone_num=phone_num)
+        message = users_pb2.LoginMessage(phone_num=phone_num)
         return self.stub.Login(message)
 
 class PrescribedDrugsDao(Client):

@@ -24,7 +24,12 @@ ALLOWED_EXTENSIONS = {'pdf', "png", "jpg", "jpeg"}
 
 @app.route('/', methods=('GET', 'POST'))
 def index():
-    return render_template('loginuser.html')
+    if request.cookies.get('logged')=='true':
+        return render_template('home.html')
+    cookie_dict = {'logged':'false'}
+    page = 'loginuser.html'
+    ret = user_cookie(dict=cookie_dict, page=page)
+    return ret
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -43,7 +48,7 @@ def signin():
             'count':'1'
         }
         resp = user_cookie(dict=cookies, page=auth)
-        rpc_obj = RegistrationClient()
+        rpc_obj = RegistrationClient(host=GRPC_MANAGEUSER_ADDR, port=GRPC_MANAGEUSER_PORT)
         rpc_obj.get_user(email=email, password=password, user_type=user_type, phone_num=phone_num, confirmed=False)
         sms_sender(phone_num)
         return resp
@@ -51,8 +56,11 @@ def signin():
 
 @app.route('/auth', methods=('GET', 'POST'))
 def confirmation():
-    rpc_obj = RegistrationClient()
-    logging.info("TRY %s.", str(request.cookies.get('count')))
+    rpc_obj = RegistrationClient(host=GRPC_MANAGEUSER_ADDR, port=GRPC_MANAGEUSER_PORT)
+    logged = check_auth()
+    if logged == 'false':
+        return render_template('loginuser.html')
+
     if request.method == 'POST':
         op = 'get'
         pin = request.form.get("upin")
@@ -63,7 +71,7 @@ def confirmation():
         if(request.cookies.get('count')>='3'):
             op="rm"
             rpc_obj.manage_pin(phone=phone_num, db_op=op, real_user=False)
-            return render_template('error.html')
+            return render_template('signin.html')
 
         elif(str(pin) == str(db_pin)):
             op = "rm"
@@ -87,20 +95,27 @@ def confirmation():
 @app.route('/loginuser', methods=('GET', 'POST'))
 def login():
     if request.method == 'POST':
-        rpc_obj = RegistrationClient()
+        rpc_obj = RegistrationClient(host=GRPC_MANAGEUSER_ADDR, port=GRPC_MANAGEUSER_PORT)
         response = rpc_obj.log_user(request.form.get('uphone'))
         db_pass = response.password
-        logging.info('DB_PASS %s', db_pass)
-        logging.info('RESP_PASS %s', request.form.get('upass'))
-        if(db_pass == request.form.get('upass')):
-            logging.info('RESP_PASS_T %s', type(request.form.get('upass')))
-            logging.info('DB_PASS_T %s', type(db_pass))
-
-            return(render_template('home.html'))
+        confirmed = response.confirmed
+        if(db_pass == request.form.get('upass') and confirmed):
+            cookie_dict = {'logged':'true'}
+            page = 'home.html'
+            resp = user_cookie(cookie_dict, page)
+            return resp 
+        elif not confirmed:
+            return render_template('auth.html')
         else:
-            flash('Invalid credentials')
+            return render_template('loginuser.html')
     return render_template('loginuser.html')
 
+@app.route('/home', methods=['GET'])
+def logout():
+    cookie_dict = {'logged':'false'}
+    page = 'loginuser.html'
+    ret = user_cookie(dict=cookie_dict, page=page)
+    return ret
 
 def user_cookie(dict, page, age=None):
     resp = make_response(render_template(page))
@@ -108,17 +123,18 @@ def user_cookie(dict, page, age=None):
         resp.set_cookie(i, dict[i], max_age=age)
     return resp 
 
-
+def check_auth():
+    return request.cookies.get('logged')
 
 def sms_sender(phone_num):
-    #sns = boto3.resource("sns")
+    sns = boto3.resource("sns")
     op = 'add'
     pin = randint(100000, 999999)
     message = "This is your account verification pin:{}".format(pin) 
-    #sns.meta.client.publish(PhoneNumber=phone_num, Message=message)
-    rpc_obj = RegistrationClient()
+    sns.meta.client.publish(PhoneNumber=phone_num, Message=message)
+    rpc_obj = RegistrationClient(host=GRPC_MANAGEUSER_ADDR, port=GRPC_MANAGEUSER_PORT)
     try:
-        #sns.meta.client.publish(PhoneNumber=phone_num, Message=message)
+        sns.meta.client.publish(PhoneNumber=phone_num, Message=message)
         logging.info("Published message to %s.", phone_num)
         rpc_obj.manage_pin(phone=phone_num, pin=pin, db_op=op, real_user=False)
 
@@ -131,6 +147,10 @@ def sms_sender(phone_num):
 
 @app.route('/upload-prescription', methods=('GET', 'POST'))
 def upload_prescription():
+    logged = check_auth()
+    if logged == 'false':
+        return render_template('loginuser.html')
+
     if request.method == 'POST':
         # check if the post request has the file part
         if 'prescription' not in request.files:
@@ -154,6 +174,10 @@ def upload_prescription():
 
 @app.route('/list-prescriptions', methods=['GET'])
 def list_prescriptions():
+    logged = check_auth()
+    if logged == 'false':
+        return render_template('loginuser.html')
+
     username = request.args.get('username', type=str)
     dao = PrescriptionsDao()
     names = dao.loadAllUserPrescriptionsNames(prescriptionBean=PrescriptionBean(username=username))
@@ -161,6 +185,9 @@ def list_prescriptions():
 
 @app.route('/get-prescription', methods=['GET'])
 def get_prescription():
+    logged = check_auth()
+    if logged == 'false':
+        return render_template('loginuser.html')
     dao = PrescriptionsDao()
     fileName = request.args.get('fileName', type=str)
     username = request.args.get('username', type=str)
@@ -173,6 +200,10 @@ def get_prescription():
 
 @app.route('/dashboard', methods=['GET'])
 def dashboard():
+    logged = check_auth()
+    if logged == 'false':
+        return render_template('loginuser.html')
+
     username = request.args.get('username', type=str)
     dao = PrescribedDrugsDao(GRPC_PANALYZER_ADDR, GR)
     prescribedDrugs = dao.getPrescribedDrugs(username)
@@ -205,7 +236,7 @@ if __name__ == '__main__':
         )
     parser.add_argument(
         "--grpc_manageuser_addr",
-        default="manage-user",
+        default="signin",
         help="Address of the manage user gRPC server.",
         )
     parser.add_argument(

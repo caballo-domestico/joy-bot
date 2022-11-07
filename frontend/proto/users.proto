@@ -36,4 +36,5 @@ message LoginMessage{
 
 message LoginResponse{
     string password = 1;
+    bool confirmed = 2;
 }
