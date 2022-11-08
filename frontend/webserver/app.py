@@ -26,10 +26,10 @@ ALLOWED_EXTENSIONS = {'pdf', "png", "jpg", "jpeg"}
 def index():
     if request.cookies.get('logged')=='true':
         return render_template('home.html')
-    cookie_dict = {'logged':'false'}
-    page = 'loginuser.html'
-    ret = user_cookie(dict=cookie_dict, page=page)
-    return ret
+        cookie_dict = {'logged':'false'}
+        page = 'loginuser.html'
+        ret = user_cookie(dict=cookie_dict, page=page)
+        return ret
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -125,6 +125,15 @@ def user_cookie(dict, page, age=None):
 
 def check_auth():
     return request.cookies.get('logged')
+
+def isLogged():
+    if check_auth() == 'true':
+        return True
+    return False
+
+@app.context_processor
+def inject_isLogged():
+    return dict(isLogged=isLogged)
 
 def sms_sender(phone_num):
     sns = boto3.resource("sns")

@@ -1,3 +1,3 @@
 #! /bin/sh
 
-make stubs && docker-compose up --build "$@"
+make stubs && docker-compose up -d "$@"

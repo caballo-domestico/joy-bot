@@ -17,8 +17,6 @@ services:
     build:
       context: ./manageusers
       dockerfile: Dockerfile
-    ports:
-      - "50051:50051"
     volumes:
       - ~/.aws/:/root/.aws
 
