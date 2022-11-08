@@ -1,7 +1,8 @@
 import boto3
 from boto3.dynamodb.conditions import Attr
 import logging
-
+from pybreaker import CircuitBreaker
+import config
 
 class DynamoBean:
     def __init__(self, tableName=None, item=None, table=None, key=None, query=None):
@@ -13,25 +14,33 @@ class DynamoBean:
 
 class Dao:
     
+    circuitBreaker = CircuitBreaker(fail_max=config.CBREAKER_OPEN_AFTER, reset_timeout=config.CBREAKER_RESET_TIMEOUT)
+    
+    @circuitBreaker
     def __init__(self):
         self.dynamodbClient = boto3.client('dynamodb')
         self.dynamodb = boto3.resource('dynamodb')
     
+    @circuitBreaker
     def getTableFromDynamoDB(self, dynamoBean):
         dynamoBean.table = self.dynamodb.Table(dynamoBean.tableName)
     
+    @circuitBreaker
     def storeToDynamoDB(self, dynamoBean):
         self.getTableFromDynamoDB(dynamoBean)
         dynamoBean.table.put_item(Item=dynamoBean.item)
     
+    @circuitBreaker
     def getItemFromTable(self, dynamoBean):
         item = self.dynamodbClient.get_item(TableName=dynamoBean.tableName, Key={dynamoBean.key:{'S':dynamoBean.query}})
         return item
 
+    @circuitBreaker
     def deleteItemFromTable(self, dynamoBean):
         item = self.dynamodbClient.delete_item(TableName=dynamoBean.tableName, Key={dynamoBean.key:{'S':dynamoBean.query}})
         return item
 
+    @circuitBreaker
     def updateItemFromTable(self, dynamoBean):
         table = self.dynamodb.Table(dynamoBean.tableName)
         response= table.update_item(

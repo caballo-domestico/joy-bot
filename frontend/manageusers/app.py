@@ -9,7 +9,7 @@ import time
 import users_pb2_grpc as pb2_grpc
 import users_pb2 as pb2
 import argparse
-
+import config
 
 logging.basicConfig(level=logging.INFO)
 class RegistrationService(pb2_grpc.RegistrationServicer):
@@ -69,7 +69,7 @@ class RegistrationService(pb2_grpc.RegistrationServicer):
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     pb2_grpc.add_RegistrationServicer_to_server(RegistrationService(), server)
-    server.add_insecure_port(GRPC_ADDR_PORT)
+    server.add_insecure_port(config.GRPC_ADDR_PORT)
     server.start()
     server.wait_for_termination()
 
@@ -77,8 +77,13 @@ def serve():
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--grpc_addr_port', default="signin:50051", help='addr:portNum for receive grpc requests')
+    parser.add_argument('--grpc_addr_port', default=config.GRPC_ADDR_PORT, help='addr:portNum for receive grpc requests')
+    parser.add_argument("--cbreaker_open_after", default=config.CBREAKER_OPEN_AFTER, type=int, help="how many failures before circuit breaker opens")
+    parser.add_argument("--cbreaker_reset_timeout", default=config.CBREAKER_RESET_TIMEOUT, type=int, help="how many seconds before circuit breaker closes again")
     args = parser.parse_args()
 
-    GRPC_ADDR_PORT = args.grpc_addr_port
+    config.GRPC_ADDR_PORT = args.grpc_addr_port
+    config.CBREAKER_OPEN_AFTER = args.cbreaker_open_after
+    config.CBREAKER_RESET_TIMEOUT = args.cbreaker_reset_timeout
+
     serve()
