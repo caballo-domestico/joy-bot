@@ -26,10 +26,10 @@ ALLOWED_EXTENSIONS = {'pdf', "png", "jpg", "jpeg"}
 def index():
     if request.cookies.get('logged')=='true':
         return render_template('home.html')
-        cookie_dict = {'logged':'false'}
-        page = 'loginuser.html'
-        ret = user_cookie(dict=cookie_dict, page=page)
-        return ret
+    cookie_dict = {'logged':'false'}
+    page = 'loginuser.html'
+    ret = user_cookie(dict=cookie_dict, page=page)
+    return ret
 
 def allowed_file(filename):
     return '.' in filename and \
