@@ -18,4 +18,7 @@ $(generated_pb): $(generatedDir)/%$(pb_suffix): $(src_protos_dir)/%.proto
 $(generated_grpc): $(generatedDir)/%$(grpc_suffix): $(src_protos_dir)/%.proto
 	protoc --go-grpc_out=. --go-grpc_opt=M$(shell basename -a $< 2>/dev/null)=$(generatedDir) -I=$(src_protos_dir) $(flags) $<
 
-stubs: $(generated_pb) $(generated_grpc)
+stubs: $(generated_pb) $(generated_grpc) $(srcDir)/notifications/notifications$(pb_suffix)
+
+$(srcDir)/notifications/notifications$(pb_suffix): $(src_protos_dir)/notifications.proto
+	protoc --go_out=. --go_opt=M$(shell basename -a $< 2>/dev/null)=$(srcDir)/notifications -I=$(src_protos_dir) $(flags) $<

@@ -2,6 +2,7 @@ import boto3
 from boto3.dynamodb.conditions import Attr
 from pub import Publisher, Topic
 import logging
+from notifications_pb2 import PrescriptionUploaded
 
 class PrescribedDrug:
     def __init__(self, name=None, frequency=None):
@@ -79,14 +80,12 @@ class PrescriptionsDao(Dao):
 
         # notify that a prescription has been uploaded
         p = Publisher()
-        metadata=p.send(
-            Topic.PRESCRIPTION_UPLOADED.value,
-            value={
-                "bucket" : fileBean.bucketName,
-                "key" : fileBean.key,
-                "s3link" : fileBean.url,
-                "username": prescriptionBean.username,
-            }).get(timeout=30)
+        notification = PrescriptionUploaded()
+        notification.bucket = fileBean.bucketName
+        notification.key = fileBean.key
+        notification.s3link = fileBean.url
+        notification.username = prescriptionBean.username
+        metadata=p.send(Topic.PRESCRIPTION_UPLOADED.value, value=notification).get(timeout=30)
         logging.debug(metadata)
         p.close()
 

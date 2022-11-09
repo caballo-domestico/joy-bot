@@ -1,5 +1,5 @@
 # what proto files are of the microservice interest
-src_protos=prescription_analyzer.proto users.proto
+src_protos=prescription_analyzer.proto users.proto notifications.proto
 # suffices of the stubs generated, depending on the language
 pb_suffix=_pb2.py
 grpc_suffix=_pb2_grpc.py

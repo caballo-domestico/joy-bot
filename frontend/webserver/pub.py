@@ -21,7 +21,7 @@ class Publisher(KafkaProducer):
         while not connected:
             try:
                 super().__init__(bootstrap_servers=KAFKA_ADDR,
-                         value_serializer=lambda v: bytes(json.dumps(v), "utf-8"),
+                         value_serializer=lambda v: bytes(v.SerializeToString()),
                          client_id="webserver")
                 connected = True
             except NoBrokersAvailable:

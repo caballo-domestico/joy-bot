@@ -2,7 +2,7 @@ package notifications
 
 import (
 	"context"
-	"encoding/json"
+	"google.golang.org/protobuf/proto"
 	"fmt"
 
 	"github.com/segmentio/kafka-go"
@@ -23,19 +23,20 @@ type PrescriptionUploadedMsg struct {
 	Bucket   string // S3 bucket name where the prescription is stored
 }
 
-func (msg *PrescriptionUploadedMsg) fromJSON(data []byte) error {
+func (msg *PrescriptionUploadedMsg) fromSerialized(data []byte) error {
 
-	jsonMap := make(map[string]string)
-	err := json.Unmarshal(data, &jsonMap)
+	deserialized := new(PrescriptionUploaded)
+	err := proto.Unmarshal(data, deserialized)
 	if err != nil {
 		log.Error(err)
-		return fmt.Errorf("unable to parse json")
+		return fmt.Errorf("failed to deserialize message")
 	}
-	msg.Key = jsonMap["key"]
-	msg.Username = jsonMap["username"]
-	msg.S3link = jsonMap["s3link"]
-	msg.Bucket = jsonMap["bucket"]
-	return err
+	msg.Bucket = deserialized.Bucket
+	msg.Key = deserialized.Key
+	msg.S3link = deserialized.S3Link
+	msg.Username = deserialized.Username
+
+	return nil
 }
 
 func Listen(out chan *PrescriptionUploadedMsg, topic Topic, kafkaAddr string) {
@@ -62,7 +63,7 @@ func Listen(out chan *PrescriptionUploadedMsg, topic Topic, kafkaAddr string) {
 			case PRESCRIPTION_UPLOADED:
 				// parses prescription uploaded notification
 				msg := new(PrescriptionUploadedMsg)
-				err := msg.fromJSON(m.Value)
+				err := msg.fromSerialized(m.Value)
 				if err != nil {
 					log.Error(err)
 					continue
