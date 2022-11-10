@@ -2,8 +2,10 @@ package notifications
 
 import (
 	"context"
-	"google.golang.org/protobuf/proto"
 	"fmt"
+	"joybot/panalyzer/main/config"
+
+	"google.golang.org/protobuf/proto"
 
 	"github.com/segmentio/kafka-go"
 	log "github.com/sirupsen/logrus"
@@ -39,11 +41,11 @@ func (msg *PrescriptionUploadedMsg) fromSerialized(data []byte) error {
 	return nil
 }
 
-func Listen(out chan *PrescriptionUploadedMsg, topic Topic, kafkaAddr string) {
+func Listen(out chan *PrescriptionUploadedMsg, topic Topic) {
 
 	// continously listen for new prescription uploads
 	r := kafka.NewReader(kafka.ReaderConfig{
-		Brokers:   []string{kafkaAddr},
+		Brokers:   []string{config.KafkaAddr},
 		Topic:     string(topic),
 		Partition: 0,
 		MinBytes:  10e3, // 10KB
