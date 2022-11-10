@@ -11,7 +11,6 @@ then
     exit 1
 fi
 
-
 scriptDir="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 rootDir="$( cd -- "$(dirname "$scriptDir")" >/dev/null 2>&1 ; pwd -P )"
 export SSH_PATH=$1
@@ -19,7 +18,7 @@ set -e
 
 # prepare infrastructure with terraform
 cd "$rootDir"/demiurges
-./launch.sh "create-ec2-frontend" "create-micorservices-resources" --cfg-path ~/.aws/config --cdls-path ~/.aws/credentials
+./launch.sh "create-ec2-frontend" "create-microservices-resources" --cfg-path ~/.aws/config --cdls-path ~/.aws/credentials
 terraform -chdir=create-ec2-frontend output -json > "$scriptDir/infrastructure.json"
 
 # compile protobuf and grpc files
