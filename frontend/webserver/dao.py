@@ -3,6 +3,10 @@ from boto3.dynamodb.conditions import Attr
 from pub import Publisher, Topic
 import logging
 from notifications_pb2 import PrescriptionUploaded
+from pybreaker import CircuitBreaker
+
+CBREAKER_OPEN_AFTER=1
+CBREAKER_RESET_TIMEOUT=30
 
 class PrescribedDrug:
     def __init__(self, name=None, frequency=None):
@@ -30,24 +34,32 @@ class DynamoBean:
 
 class Dao:
     
+    circuitBreaker = CircuitBreaker(fail_max=CBREAKER_OPEN_AFTER, reset_timeout=CBREAKER_RESET_TIMEOUT)
+
+    @circuitBreaker
     def __init__(self):
         self.s3Client = boto3.client('s3')
         self.dynamodbClient = boto3.client('dynamodb')
         self.dynamodb = boto3.resource('dynamodb')
     
+    @circuitBreaker
     def makeS3ObjectUrl(self, bucketName, key):
         return f"https://{bucketName}.s3.amazonaws.com/{key}"
     
+    @circuitBreaker
     def storeFileToS3(self, fileBean):
         self.s3Client.upload_fileobj(fileBean.file, fileBean.bucketName, fileBean.key)
         fileBean.url = self.makeS3ObjectUrl(fileBean.bucketName, fileBean.key)
-
+    
+    @circuitBreaker
     def loadFileFromS3(self, fileBean):
         self.s3Client.download_fileobj(fileBean.bucketName, fileBean.key, fileBean.file)
-
+    
+    @circuitBreaker
     def getTableFromDynamoDB(self, dynamoBean):
         dynamoBean.table = self.dynamodb.Table(dynamoBean.tableName)
     
+    @circuitBreaker
     def storeToDynamoDB(self, dynamoBean):
         self.getTableFromDynamoDB(dynamoBean)
         dynamoBean.table.put_item(Item=dynamoBean.item)

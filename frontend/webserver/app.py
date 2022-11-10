@@ -42,7 +42,7 @@ def signin():
         email = request.form.get("umail")
         password = request.form.get("upass")
         user_type = request.form.get("utype")
-        phone_num = request.form.get("uphone")
+        phone_num = request.form.get("uprefix")+request.form.get("uphone")
         cookies = {
             'userphone':phone_num, 
             'count':'1'
@@ -59,6 +59,7 @@ def confirmation():
     rpc_obj = RegistrationClient(host=GRPC_MANAGEUSER_ADDR, port=GRPC_MANAGEUSER_PORT)
     logged = check_auth()
     if logged == 'false':
+        flash('Login needed for this operation')
         return render_template('loginuser.html')
 
     if request.method == 'POST':
@@ -71,6 +72,7 @@ def confirmation():
         if(request.cookies.get('count')>='3'):
             op="rm"
             rpc_obj.manage_pin(phone=phone_num, db_op=op, real_user=False)
+            flash('Epired pin, insert your data again')
             return render_template('signin.html')
 
         elif(str(pin) == str(db_pin)):
@@ -89,6 +91,7 @@ def confirmation():
                 'count': str(value)
             }     
             ret = user_cookie(dict=counter, page=page)
+            flash('Wrong pin, %s try left', str(3-value))
             return ret
     return render_template('auth.html')
 
@@ -96,11 +99,16 @@ def confirmation():
 def login():
     if request.method == 'POST':
         rpc_obj = RegistrationClient(host=GRPC_MANAGEUSER_ADDR, port=GRPC_MANAGEUSER_PORT)
-        response = rpc_obj.log_user(request.form.get('uphone'))
+        phone_num = request.form.get('uprefix')+request.form.get('uphone')
+        response = rpc_obj.log_user(phone_num)
+        if response.password=='not found':
+            flash('Wrong username or password')
+            return render_template('loginuser.html')
         db_pass = response.password
         confirmed = response.confirmed
         if(db_pass == request.form.get('upass') and confirmed):
-            cookie_dict = {'logged':'true'}
+            cookie_dict = {'logged':'true',
+                        'userphone':phone_num}
             page = 'home.html'
             resp = user_cookie(cookie_dict, page)
             return resp 
@@ -158,6 +166,7 @@ def sms_sender(phone_num):
 def upload_prescription():
     logged = check_auth()
     if logged == 'false':
+        flash('Login needed for this operation')
         return render_template('loginuser.html')
 
     if request.method == 'POST':
@@ -185,6 +194,7 @@ def upload_prescription():
 def list_prescriptions():
     logged = check_auth()
     if logged == 'false':
+        flash('Login needed for this operation')
         return render_template('loginuser.html')
 
     username = request.args.get('username', type=str)
@@ -196,6 +206,7 @@ def list_prescriptions():
 def get_prescription():
     logged = check_auth()
     if logged == 'false':
+        flash('Login needed for this operation')
         return render_template('loginuser.html')
     dao = PrescriptionsDao()
     fileName = request.args.get('fileName', type=str)
@@ -211,6 +222,7 @@ def get_prescription():
 def dashboard():
     logged = check_auth()
     if logged == 'false':
+        flash('Login needed for this operation')
         return render_template('loginuser.html')
 
     username = request.args.get('username', type=str)

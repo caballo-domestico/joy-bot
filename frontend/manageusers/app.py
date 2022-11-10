@@ -60,10 +60,11 @@ class RegistrationService(pb2_grpc.RegistrationServicer):
         
     def Login(self, request, context):
         phone = request.phone_num
-
         registrationDao = RegistrationDao()
         response = registrationDao.getUser(registrationBean=RegistrationBean(phone_num=phone))
-        return pb2.LoginResponse(password=response['Item']['password']['S'], confirmed=response['Item']['confirmed']['BOOL'])
+        if 'Item' in response:
+            return pb2.LoginResponse(password=response['Item']['password']['S'], confirmed=response['Item']['confirmed']['BOOL'])
+        return pb2.LoginResponse(password='not found', confirmed=False)
 
 
 def serve():
