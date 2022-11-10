@@ -13,6 +13,36 @@ provider "aws" {
   region = "us-east-1"
 }
 
+resource "aws_dynamodb_table" "prescription_analysis" {
+  name           = "Prescription_analysis"
+  hash_key       = "id"
+  read_capacity  = 5
+  write_capacity = 5
+  attribute {
+    name = "id"
+    type = "S"
+  }
+}
+
+resource "aws_dynamodb_table" "prescriptions" {
+  name           = "Prescriptions"
+  hash_key       = "id"
+  read_capacity  = 5
+  write_capacity = 5
+  attribute {
+    name = "id"
+    type = "S"
+  }
+}
+
+resource "aws_s3_bucket" "prescriptions" {
+  bucket = "joy-bot.prescriptions"
+
+  tags = {
+    Name = "prescriptions"
+  }
+}
+
 resource "aws_dynamodb_table" "users" {
   name           = "Users"
   hash_key       = "phone_num"

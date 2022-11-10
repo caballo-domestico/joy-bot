@@ -1,0 +1,7 @@
+H webserver/__pycache__/
+H .vscode/
+H proto/
+H prescription-analyzer/bin/
+H **/Makefile
+H **/.gitignore
+H start-orchestration.sh

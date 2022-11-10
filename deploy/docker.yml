@@ -4,18 +4,6 @@
   hosts: all
   become: yes
   tasks:
-    - name: Copy app files
-      copy:
-        src: frontend/ 
-        dest: joy-bot
-        mode: '0644'
-
-    - name: Copy aws files
-      copy:
-        src: .aws/
-        dest: /home/ec2-user/.aws
-        mode: '0644'
-
     - name: Update all packages
       yum:
         name: '*'
@@ -25,7 +13,7 @@
     - name: Ensure a list of yum packages are installed
       yum:
         name: "{{ packages }}"
-        state: latest
+        state: present
         update_cache: yes
       vars:
         packages:
@@ -35,11 +23,15 @@
         - lvm2
         - amazon-linux-extras
 
-    - name: Add extras repository
-      shell: yum-config-manager --enable extras
-
+    - name: check if docker is installed
+      command: docker --version
+      when: true
+      register: docker_installed
+      ignore_errors: yes
+    
     - name: Install docker-ce (centos) via amazon-linux-extras packages
-      shell: "amazon-linux-extras install docker -y"
+      command: amazon-linux-extras install docker -y
+      when: docker_installed.rc != 0
 
     - name: Enable Docker CE service at startup
       service:
@@ -48,7 +40,7 @@
         enabled: yes
 
     - name: Docker permissions
-      shell: "chmod 666 /var/run/docker.sock"
+      file: dest=/var/run/docker.sock mode=666
 
     - name: Ensure Python pip packages are installed
       pip:

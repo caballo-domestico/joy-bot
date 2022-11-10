@@ -10,9 +10,6 @@ then
     exit 1
 fi
 
-target=$1
-shift
-
 while [ "$1" != "" ]; do
     case $1 in
     --cfg-path)
@@ -28,20 +25,23 @@ while [ "$1" != "" ]; do
         export AWS_PROFILE="$1"
         ;;
     *)
-        echo "$usage"
-        exit 1
+        targets+=("$1") 
+        ;;
     esac
     shift
 done
 
 # starts transaction
 set -e
-cd "$target"
-terraform init  # initialize terraform environment if not done before
-terraform fmt   # makes terraform files more readable
-terraform validate # Assures that the terraform files are syntatically correct
-terraform apply # Applies the changes
+
+for t in "${targets[@]}"; do
+    echo launching terraform with target "$t"
+    tf="terraform -chdir=$t"
+    $tf init
+    $tf fmt   # makes terraform files more readable
+    $tf validate # Assures that the terraform files are syntatically correct
+    $tf apply
+    $tf show  # Shows the changes
+done
+
 set +e
-
-terraform show  # Shows the current state of the infrastructure
-

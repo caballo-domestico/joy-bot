@@ -1,0 +1,29 @@
+- name: "AWS - Install joyBot"
+  vars:
+    - local_project_path: "{{ playbook_dir }}/.."
+    - remote_project_path: "joyBot"
+    - ansible_become_password: ''
+  hosts: all
+  become: yes
+  become_user: ec2-user
+  tasks:
+    - name: Install rsync
+      yum:
+        name: rsync
+        state: present
+
+    - name: Copy aws files
+      ansible.posix.synchronize:
+        src: ~/.aws/
+        dest: /home/ec2-user/.aws
+
+    - name: Copy app files
+      ansible.posix.synchronize:
+        src: "{{ local_project_path }}/frontend/" 
+        dest: "{{ remote_project_path }}"
+        
+    - name: start app
+      community.docker.docker_compose:
+        project_src: "{{ remote_project_path }}"
+        files:
+          - docker-compose.yml
