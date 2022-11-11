@@ -63,7 +63,7 @@ def allowed_file(filename):
 
 @app.route('/signin', methods=('GET', 'POST'))
 def signin():
-    auth = 'auth.html'
+    auth = 'auth'
     if request.method == 'POST':
         email = request.form.get("umail")
         password = request.form.get("upass")

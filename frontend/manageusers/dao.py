@@ -14,7 +14,11 @@ class DynamoBean:
 
 class Dao:
     
-    circuitBreaker = CircuitBreaker(fail_max=config.CBREAKER_OPEN_AFTER, reset_timeout=config.CBREAKER_RESET_TIMEOUT)
+    circuitBreaker = CircuitBreaker(
+        fail_max=config.CBREAKER_OPEN_AFTER,
+        reset_timeout=config.CBREAKER_RESET_TIMEOUT,
+        throw_new_error_on_trip=False
+    )
     
     @circuitBreaker
     def __init__(self):
