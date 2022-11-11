@@ -22,14 +22,40 @@ bootstrap = Bootstrap5(app)
 app.config['SECRET_KEY'] = os.urandom(24).hex()
 ALLOWED_EXTENSIONS = {'pdf', "png", "jpg", "jpeg"}
 
+def user_cookie(dict, page, age=None):
+    resp = make_response(redirect(page))
+    for i in dict:
+        resp.set_cookie(i, dict[i], max_age=age)
+    return resp 
+
+def check_auth():
+    return request.cookies.get('logged')
+
+def isLogged():
+    if  check_auth() is not None and check_auth() == 'true':
+        return True
+    return False
+
+def redirectToLogin():
+    flash('Login needed for this operation', category="danger")
+    return redirect('loginuser')
+
+def enforceLogin(func):
+    def _login(*args, **kwargs):
+        if not isLogged():
+            return redirectToLogin()
+        else:
+            return func(*args, **kwargs)
+    _login.__name__ = func.__name__
+    return _login
+
+@app.context_processor
+def inject_isLogged():
+    return dict(isLogged=isLogged)
+
 @app.route('/', methods=('GET', 'POST'))
 def index():
-    if request.cookies.get('logged')=='true':
-        return render_template('home.html')
-    cookie_dict = {'logged':'false'}
-    page = 'loginuser.html'
-    ret = user_cookie(dict=cookie_dict, page=page)
-    return ret
+    return render_template(template_name_or_list='home.html')
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -57,10 +83,6 @@ def signin():
 @app.route('/auth', methods=('GET', 'POST'))
 def confirmation():
     rpc_obj = RegistrationClient(host=GRPC_MANAGEUSER_ADDR, port=GRPC_MANAGEUSER_PORT)
-    logged = check_auth()
-    if logged == 'false':
-        flash('Login needed for this operation')
-        return render_template('loginuser.html')
 
     if request.method == 'POST':
         op = 'get'
@@ -72,12 +94,12 @@ def confirmation():
         if(request.cookies.get('count')>='3'):
             op="rm"
             rpc_obj.manage_pin(phone=phone_num, db_op=op, real_user=False)
-            flash('Epired pin, insert your data again')
+            flash('Espired pin, insert your data again', category="danger")
             return render_template('signin.html')
 
         elif(str(pin) == str(db_pin)):
             op = "rm"
-            page='home.html'
+            page='auth'
             counter = {
                 'count': '0'
             }     
@@ -85,13 +107,13 @@ def confirmation():
             ret = user_cookie(dict=counter, page=page, age=0)
             return ret
         else:
-            page = 'auth.html' 
+            page = 'auth' 
             value = int(request.cookies.get('count'))+1
             counter = {
                 'count': str(value)
             }     
             ret = user_cookie(dict=counter, page=page)
-            flash('Wrong pin, %s try left', str(3-value))
+            flash(f'Wrong pin, {str(3-value)} try left', category="danger")
             return ret
     return render_template('auth.html')
 
@@ -102,14 +124,14 @@ def login():
         phone_num = request.form.get('uprefix')+request.form.get('uphone')
         response = rpc_obj.log_user(phone_num)
         if response.password=='not found':
-            flash('Wrong username or password')
+            flash('Wrong username or password', category="danger")
             return render_template('loginuser.html')
         db_pass = response.password
         confirmed = response.confirmed
         if(db_pass == request.form.get('upass') and confirmed):
             cookie_dict = {'logged':'true',
                         'userphone':phone_num}
-            page = 'home.html'
+            page = '/'
             resp = user_cookie(cookie_dict, page)
             return resp 
         elif not confirmed:
@@ -121,27 +143,9 @@ def login():
 @app.route('/home', methods=['GET'])
 def logout():
     cookie_dict = {'logged':'false'}
-    page = 'loginuser.html'
+    page = 'loginuser'
     ret = user_cookie(dict=cookie_dict, page=page)
     return ret
-
-def user_cookie(dict, page, age=None):
-    resp = make_response(render_template(page))
-    for i in dict:
-        resp.set_cookie(i, dict[i], max_age=age)
-    return resp 
-
-def check_auth():
-    return request.cookies.get('logged')
-
-def isLogged():
-    if check_auth() == 'true':
-        return True
-    return False
-
-@app.context_processor
-def inject_isLogged():
-    return dict(isLogged=isLogged)
 
 def sms_sender(phone_num):
     sns = boto3.resource("sns")
@@ -161,14 +165,9 @@ def sms_sender(phone_num):
     else:
         return pin
 
-
 @app.route('/upload-prescription', methods=('GET', 'POST'))
+@enforceLogin
 def upload_prescription():
-    logged = check_auth()
-    if logged == 'false':
-        flash('Login needed for this operation')
-        return render_template('loginuser.html')
-
     if request.method == 'POST':
         # check if the post request has the file part
         if 'prescription' not in request.files:
@@ -191,11 +190,11 @@ def upload_prescription():
     return render_template('upload-prescription.html')
 
 @app.route('/list-prescriptions', methods=['GET'])
+@enforceLogin
 def list_prescriptions():
     logged = check_auth()
-    if logged == 'false':
-        flash('Login needed for this operation')
-        return render_template('loginuser.html')
+    if not isLogged():
+        redirectToLogin()
 
     username = request.args.get('username', type=str)
     dao = PrescriptionsDao()
@@ -203,6 +202,7 @@ def list_prescriptions():
     return render_template('list-prescriptions.html', names=names, username=username)
 
 @app.route('/get-prescription', methods=['GET'])
+@enforceLogin
 def get_prescription():
     logged = check_auth()
     if logged == 'false':
@@ -219,12 +219,8 @@ def get_prescription():
     return response
 
 @app.route('/dashboard', methods=['GET'])
+@enforceLogin
 def dashboard():
-    logged = check_auth()
-    if logged == 'false':
-        flash('Login needed for this operation')
-        return render_template('loginuser.html')
-
     username = request.args.get('username', type=str)
     dao = PrescribedDrugsDao(GRPC_PANALYZER_ADDR, GRPC_PANALYZER_PORT)
     prescribedDrugs = dao.getPrescribedDrugs(username)
