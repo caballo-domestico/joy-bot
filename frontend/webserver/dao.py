@@ -105,7 +105,7 @@ class PrescriptionsDao(Dao):
         dynamoBean = DynamoBean(tableName=self.tableName, item={
             "id": key,
             "username": prescriptionBean.username,
-            "fileName": prescriptionBean.file.filename,
+            "fileName": prescriptionBean.fileName,
             "link": fileBean.url
         })
         self.storeToDynamoDB(dynamoBean)
