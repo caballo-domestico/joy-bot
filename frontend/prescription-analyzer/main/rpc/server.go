@@ -40,7 +40,7 @@ func (s prescriptionAnalyzerServer) GetPrescribedDrugs(in *PatientUsername, stre
 		return fmt.Errorf("failed to get prescribed drugs from dynamodb")
 	}
 	// send serialized prescribed drugs to the client
-	for _, prescribedDrug := range prescribedDrugs.([]dao.PrescribedDrug) {
+	for _, prescribedDrug := range prescribedDrugs.([]*dao.PrescribedDrug) {
 		serializedPrescribedDrug := new(PrescribedDrug)
 		serializedPrescribedDrug.Name = prescribedDrug.Name
 		serializedPrescribedDrug.Frequency = prescribedDrug.Frequency
