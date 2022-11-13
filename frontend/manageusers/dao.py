@@ -54,10 +54,10 @@ class Dao:
 
 class RegistrationBean:
 
-    def __init__(self,email=None, password=None, user_type=None, phone_num=None, confirmed=None):
+    def __init__(self,email=None, password=None, username=None, phone_num=None, confirmed=None):
         self.email = email
         self.password = password
-        self.user_type = user_type
+        self.username = username
         self.phone_num = phone_num
         self.confirmed = confirmed
 
@@ -77,7 +77,7 @@ class RegistrationDao(Dao):
         dynamoBean = DynamoBean(tableName=self.tableName, item={
             "email": registrationBean.email,
             "password": registrationBean.password,
-            "user_type": registrationBean.user_type,
+            "username": registrationBean.username,
             "phone_num": registrationBean.phone_num,
             "confirmed": registrationBean.confirmed
         })

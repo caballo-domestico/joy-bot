@@ -1,3 +1,9 @@
+variable "bucket_prescription_name" {
+  type        = string
+  description = "name of the s3 bucket to store prescriptions"
+  nullable    = false
+}
+
 terraform {
   required_providers {
     aws = {
@@ -36,7 +42,7 @@ resource "aws_dynamodb_table" "prescriptions" {
 }
 
 resource "aws_s3_bucket" "prescriptions" {
-  bucket = "joy-bot.prescriptions"
+  bucket = var.bucket_prescription_name
 
   tags = {
     Name = "prescriptions"

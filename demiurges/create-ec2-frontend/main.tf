@@ -21,7 +21,7 @@ provider "aws" {
 
 resource "aws_instance" "frontend" {
   ami                    = "ami-026b57f3c383c2eec"
-  instance_type          = "t2.micro"
+  instance_type          = "t2.small"
   key_name               = var.key_name
   vpc_security_group_ids = [aws_security_group.allow_ssh.id]
   tags = {

@@ -9,7 +9,7 @@ service Registration{
 message Message{
  string email = 1;
  string password = 2;
- string user_type = 3;
+ string username = 3;
  string phone_num = 4;
  bool confirmed = 5;
 }

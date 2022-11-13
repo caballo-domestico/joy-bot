@@ -15,6 +15,7 @@ from flask_bootstrap import Bootstrap5
 import logging
 import argparse
 import pub
+import config
 
 logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
@@ -63,26 +64,27 @@ def allowed_file(filename):
 
 @app.route('/signin', methods=('GET', 'POST'))
 def signin():
-    auth = 'auth.html'
+    auth = 'auth'
     if request.method == 'POST':
         email = request.form.get("umail")
         password = request.form.get("upass")
-        user_type = request.form.get("utype")
+        username = request.form.get("username")
         phone_num = request.form.get("uprefix")+request.form.get("uphone")
         cookies = {
             'userphone':phone_num, 
+            'username':username,
             'count':'1'
         }
         resp = user_cookie(dict=cookies, page=auth)
-        rpc_obj = RegistrationClient(host=GRPC_MANAGEUSER_ADDR, port=GRPC_MANAGEUSER_PORT)
-        rpc_obj.get_user(email=email, password=password, user_type=user_type, phone_num=phone_num, confirmed=False)
+        rpc_obj = RegistrationClient(host=config.GRPC_MANAGEUSER_ADDR, port=config.GRPC_MANAGEUSER_PORT)
+        rpc_obj.get_user(email=email, password=password, username=username, phone_num=phone_num, confirmed=False)
         sms_sender(phone_num)
         return resp
     return render_template('signin.html')
 
 @app.route('/auth', methods=('GET', 'POST'))
 def confirmation():
-    rpc_obj = RegistrationClient(host=GRPC_MANAGEUSER_ADDR, port=GRPC_MANAGEUSER_PORT)
+    rpc_obj = RegistrationClient(host=config.GRPC_MANAGEUSER_ADDR, port=config.GRPC_MANAGEUSER_PORT)
 
     if request.method == 'POST':
         op = 'get'
@@ -99,7 +101,7 @@ def confirmation():
 
         elif(str(pin) == str(db_pin)):
             op = "rm"
-            page='auth'
+            page='loginuser'
             counter = {
                 'count': '0'
             }     
@@ -120,7 +122,7 @@ def confirmation():
 @app.route('/loginuser', methods=('GET', 'POST'))
 def login():
     if request.method == 'POST':
-        rpc_obj = RegistrationClient(host=GRPC_MANAGEUSER_ADDR, port=GRPC_MANAGEUSER_PORT)
+        rpc_obj = RegistrationClient(host=config.GRPC_MANAGEUSER_ADDR, port=config.GRPC_MANAGEUSER_PORT)
         phone_num = request.form.get('uprefix')+request.form.get('uphone')
         response = rpc_obj.log_user(phone_num)
         if response.password=='not found':
@@ -148,15 +150,17 @@ def logout():
     return ret
 
 def sms_sender(phone_num):
+    logging.info('SENDING SMS')
     sns = boto3.resource("sns")
     op = 'add'
     pin = randint(100000, 999999)
     message = "This is your account verification pin:{}".format(pin) 
     sns.meta.client.publish(PhoneNumber=phone_num, Message=message)
-    rpc_obj = RegistrationClient(host=GRPC_MANAGEUSER_ADDR, port=GRPC_MANAGEUSER_PORT)
+    rpc_obj = RegistrationClient(host=config.GRPC_MANAGEUSER_ADDR, port=config.GRPC_MANAGEUSER_PORT)
     try:
-        sns.meta.client.publish(PhoneNumber=phone_num, Message=message)
+        ret_sms=sns.meta.client.publish(PhoneNumber=phone_num, Message=message)
         logging.info("Published message to %s.", phone_num)
+        logging.info("RETURN %s", ret_sms)
         rpc_obj.manage_pin(phone=phone_num, pin=pin, db_op=op, real_user=False)
 
     except botocore.exceptions.ClientError:
@@ -199,6 +203,7 @@ def list_prescriptions():
     username = request.args.get('username', type=str)
     dao = PrescriptionsDao()
     names = dao.loadAllUserPrescriptionsNames(prescriptionBean=PrescriptionBean(username=username))
+    logging.info('Names %s', names)
     return render_template('list-prescriptions.html', names=names, username=username)
 
 @app.route('/get-prescription', methods=['GET'])
@@ -212,6 +217,7 @@ def get_prescription():
     fileName = request.args.get('fileName', type=str)
     username = request.args.get('username', type=str)
     buf = TemporaryFile(mode="w+b")
+    logging.info('Filename %s', fileName+' '+username)
     prescriptionBean = PrescriptionBean(username=username, file=buf, fileName=fileName)
     dao.loadPrescription(prescriptionBean=prescriptionBean)
     buf.seek(0)
@@ -222,7 +228,7 @@ def get_prescription():
 @enforceLogin
 def dashboard():
     username = request.args.get('username', type=str)
-    dao = PrescribedDrugsDao(GRPC_PANALYZER_ADDR, GRPC_PANALYZER_PORT)
+    dao = PrescribedDrugsDao(config.GRPC_PANALYZER_ADDR, config.GRPC_PANALYZER_PORT)
     prescribedDrugs = dao.getPrescribedDrugs(username)
     return render_template('dashboard.html', prescribedDrugs=prescribedDrugs, username=username)
     
@@ -242,46 +248,46 @@ if __name__ == '__main__':
         )
     parser.add_argument(
         "--grpc_panalyzer_addr",
-        default="prescription-analyzer",
+        default=config.GRPC_PANALYZER_ADDR,
         help="Address of the prescription analyzer gRPC server.",
         )
     parser.add_argument(
         "--grpc_panalyzer_port",
-        default="50051",
+        default=config.GRPC_PANALYZER_PORT,
         help="port of the prescription analyzer gRPC server",
         type=int,
         )
     parser.add_argument(
         "--grpc_manageuser_addr",
-        default="signin",
+        default=config.GRPC_MANAGEUSER_ADDR,
         help="Address of the manage user gRPC server.",
         )
     parser.add_argument(
         "--grpc_manageuser_port",
-        default="50051",
+        default=config.GRPC_MANAGEUSER_PORT,
         help="port of the manage user gRPC server",
         type=int,
         )
     parser.add_argument(
         "--host_addr",
-        default="0.0.0.0",
+        default=config.HOST_ADDR,
         help="Address of this webserver.",
         )
     parser.add_argument(
         "--host_port",
-        default="5000",
+        default=config.HOST_PORT,
         help="Port of this webserver.",
         type=int,
         )
     args = parser.parse_args()
 
-    HOST_ADDR = args.host_addr
-    HOST_PORT = args.host_port
-    GRPC_MANAGEUSER_ADDR = args.grpc_manageuser_addr
-    GRPC_MANAGEUSER_PORT = args.grpc_manageuser_port
-    GRPC_PANALYZER_ADDR = args.grpc_panalyzer_addr
-    GRPC_PANALYZER_PORT = args.grpc_panalyzer_port
+    config.HOST_ADDR = args.host_addr
+    config.HOST_PORT = args.host_port
+    config.GRPC_MANAGEUSER_ADDR = args.grpc_manageuser_addr
+    config.GRPC_MANAGEUSER_PORT = args.grpc_manageuser_port
+    config.GRPC_PANALYZER_ADDR = args.grpc_panalyzer_addr
+    config.GRPC_PANALYZER_PORT = args.grpc_panalyzer_port
 
     pub.setKafkaAddr(addr=args.kafka_addr, port=args.kafka_port)
 
-    app.run(debug=True, host=HOST_ADDR)
+    app.run(debug=True, host=config.HOST_ADDR)

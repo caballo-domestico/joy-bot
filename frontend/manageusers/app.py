@@ -22,12 +22,12 @@ class RegistrationService(pb2_grpc.RegistrationServicer):
         # get the string from the incoming request
         email = request.email
         password = request.password
-        user_type = request.user_type
+        username = request.username
         phone_num = request.phone_num
         confirmed = request.confirmed
 
         registrationDao = RegistrationDao()
-        registrationDao.registerUser(registrationBean=RegistrationBean(email=email, password=password, user_type=user_type, phone_num=phone_num, confirmed=confirmed))
+        registrationDao.registerUser(registrationBean=RegistrationBean(email=email, password=password, username=username, phone_num=phone_num, confirmed=confirmed))
         result = {'received': True}
         
         return pb2.MessageResponse(**result)

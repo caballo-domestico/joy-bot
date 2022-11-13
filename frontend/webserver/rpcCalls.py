@@ -31,8 +31,8 @@ class RegistrationClient(Client):
         # bind the client and the server
         self.stub = users_pb2_grpc.RegistrationStub(self.channel)
     @circuitBreaker
-    def get_user(self, email, password, user_type, phone_num, confirmed):
-        message = users_pb2.Message(email=email, password=password, user_type=user_type, phone_num=phone_num, confirmed=confirmed)
+    def get_user(self, email, password, username, phone_num, confirmed):
+        message = users_pb2.Message(email=email, password=password, username=username, phone_num=phone_num, confirmed=confirmed)
         print(f'{message}')
         return self.stub.UsersRegistration(message)
     

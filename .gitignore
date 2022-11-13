@@ -3,6 +3,7 @@ demiurges/**/.terraform.lock.hcl
 demiurges/**/terraform.tfstate
 demiurges/**/terraform.tfstate.backup
 frontend/webserver/**/__pycache__/
+forntend/end-game.sh
 deploy/hosts
 deploy/infrastructure.json
 playbooks/credentials
