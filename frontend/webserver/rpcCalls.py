@@ -4,10 +4,7 @@ import users_pb2
 import prescription_analyzer_pb2
 import prescription_analyzer_pb2_grpc
 from pybreaker import CircuitBreaker
-
-CBREAKER_OPEN_AFTER=1
-CBREAKER_RESET_TIMEOUT=30
-
+import config
 
 class Client:
 
@@ -22,7 +19,7 @@ class RegistrationClient(Client):
     """
     Client for gRPC functionality
     """
-    circuitBreaker = CircuitBreaker(fail_max=CBREAKER_OPEN_AFTER, reset_timeout=CBREAKER_RESET_TIMEOUT)
+    circuitBreaker = CircuitBreaker(fail_max=config.CBREAKER_OPEN_AFTER, reset_timeout=config.CBREAKER_RESET_TIMEOUT)
     
     @circuitBreaker
     def __init__(self, host, port):
@@ -47,7 +44,7 @@ class RegistrationClient(Client):
         return self.stub.Login(message)
 
 class PrescribedDrugsDao(Client):
-    circuitBreaker = CircuitBreaker(fail_max=CBREAKER_OPEN_AFTER, reset_timeout=CBREAKER_RESET_TIMEOUT)
+    circuitBreaker = CircuitBreaker(fail_max=config.CBREAKER_OPEN_AFTER, reset_timeout=config.CBREAKER_RESET_TIMEOUT)
 
     @circuitBreaker
     def __init__(self, host, port):
