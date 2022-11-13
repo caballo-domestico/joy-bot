@@ -14,8 +14,12 @@
         {% endblock %}
     </head>
     <body>
+        {% include "toolbar.html" %}
+
         <!-- Your page content -->
         {% block content %}{% endblock %}
+        
+        {% include 'print-flashed-messages.html' %}
 
         {% block scripts %}
             <!-- Optional JavaScript -->
