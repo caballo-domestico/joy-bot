@@ -1,7 +1,6 @@
 variable "bucket_prescription_name" {
   type        = string
   description = "name of the s3 bucket to store prescriptions"
-  nullable    = false
 }
 
 terraform {
@@ -42,6 +41,7 @@ resource "aws_dynamodb_table" "prescriptions" {
 }
 
 resource "aws_s3_bucket" "prescriptions" {
+  count  = var.bucket_prescription_name == "" ? 0 : 1
   bucket = var.bucket_prescription_name
 
   tags = {

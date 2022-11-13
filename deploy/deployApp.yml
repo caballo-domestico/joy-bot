@@ -21,9 +21,11 @@
       ansible.posix.synchronize:
         src: "{{ local_project_path }}/frontend/" 
         dest: "{{ remote_project_path }}"
+      register: app_files
         
-    - name: start app
+    - name: Build and start app
       community.docker.docker_compose:
         project_src: "{{ remote_project_path }}"
         files:
           - docker-compose.yml
+        build: "{{ app_files.changed }}"
