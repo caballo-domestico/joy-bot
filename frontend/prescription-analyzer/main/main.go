@@ -20,18 +20,22 @@ func main() {
 	log.SetLevel(log.DebugLevel)
 	log.SetReportCaller(true)
 
-	config.KafkaAddr = *flag.String("kafka-addr", "kafka:9092", "kafka_address:port")
-	config.RpcAddr = *flag.String("rpc-addr", "50051", "rpc_address:port")
-	config.RpcNetwork = *flag.String("rpc-network", "tcp", "same network values as go net.Listen")
-	config.CbTimeout = *flag.Duration("cb-timeout", 30, "duration of open circuit state")
-	config.CbMaxRequest = uint32(*flag.Uint("cb-max-requests", 0, "max number of requests before circuit breaker opens"))
-
+	kafkaAddr := flag.String("kafka-addr", "kafka:9092", "kafka_address:port")
+	rpcAddr := flag.String("rpc-addr", "50051", "rpc_address:port")
+	rpcNetwork := flag.String("rpc-network", "tcp", "same network values as go net.Listen")
+	cbTimeout := flag.Duration("cb-timeout", 30, "duration of open circuit state")
+	cbMaxRequest := flag.Uint("cb-max-requests", 0, "max number of requests before circuit breaker opens")
 	flag.Parse()
+	config.KafkaAddr = *kafkaAddr
+	config.RpcAddr = *rpcAddr
+	config.RpcNetwork = *rpcNetwork
+	config.CbTimeout = *cbTimeout
+	config.CbMaxRequest = uint32(*cbMaxRequest)
 
 	// create a circuit breaker to use globally
 	cb := gobreaker.NewCircuitBreaker(gobreaker.Settings{
 		Name:        "main",
-		MaxRequests: config.CbMaxRequest,
+		MaxRequests: uint32(config.CbMaxRequest),
 		Timeout:     config.CbTimeout,
 	})
 
