@@ -279,6 +279,11 @@ if __name__ == '__main__':
         help="Port of this webserver.",
         type=int,
         )
+    parser.add_argument(
+        "--bucket_prescriptions",
+        default=config.BUCKET_PRESCRIPTIONS,
+        help="name of the bucket where to store prescriptions",
+        )
     args = parser.parse_args()
 
     config.HOST_ADDR = args.host_addr
@@ -287,6 +292,7 @@ if __name__ == '__main__':
     config.GRPC_MANAGEUSER_PORT = args.grpc_manageuser_port
     config.GRPC_PANALYZER_ADDR = args.grpc_panalyzer_addr
     config.GRPC_PANALYZER_PORT = args.grpc_panalyzer_port
+    config.BUCKET_PRESCRIPTIONS = args.bucket_prescriptions
 
     pub.setKafkaAddr(addr=args.kafka_addr, port=args.kafka_port)
 

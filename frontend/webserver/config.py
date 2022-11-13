@@ -1,4 +1,4 @@
-BUCKET_NAME = 'joy-bot.prescriptions-e'
+BUCKET_PRESCRIPTIONS = None # must specify at startup
 HOST_ADDR = "0.0.0.0"
 HOST_PORT = "5000"
 GRPC_MANAGEUSER_ADDR = "50051"

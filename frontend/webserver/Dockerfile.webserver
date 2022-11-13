@@ -7,4 +7,4 @@ RUN pip3 install -r requirements.txt
 ENV FLASK_APP=app.py
 ENV PYTHONBUFFERED=1
 COPY . .
-CMD [ "python", "app.py", "--kafka_addr=kafka", "--kafka_port=9092", "--grpc_panalyzer_addr=prescription-analyzer", "--grpc_panalyzer_port=50051", "--grpc_manageuser_addr=signin", "--grpc_manageuser_port=50051", "--host_addr=0.0.0.0", "--host_port=5000"]
+CMD [ "python", "app.py", "--kafka_addr=kafka", "--kafka_port=9092", "--grpc_panalyzer_addr=prescription-analyzer", "--grpc_panalyzer_port=50051", "--grpc_manageuser_addr=signin", "--grpc_manageuser_port=50051", "--host_addr=0.0.0.0", "--host_port=5000", "--bucket_prescriptions=joy-bot.prescriptions"]
