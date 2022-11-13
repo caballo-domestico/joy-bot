@@ -50,7 +50,7 @@ python3 getIp.py
 
 # prepare docker environment and install app with ansible
 echo "$0": deploying app to remote host with ansible
-#export ANSIBLE_HOST_KEY_CHECKING=False
+export ANSIBLE_HOST_KEY_CHECKING=False
 if [ -z "$skipDependencies" ]
 then
     playbooks+=("docker.yml")
