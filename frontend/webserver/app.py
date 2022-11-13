@@ -184,7 +184,7 @@ def upload_prescription():
         if file and allowed_file(file.filename):
             
             # uploads prescription and its metadata to db
-            filename = secure_filename(file.filename).replace(" ", "_")        
+            filename = secure_filename(file.filename).replace(" ", "_")
             username=quote_plus("test")
             dao = PrescriptionsDao()
             bean = PrescriptionBean(username=username, file=file, fileName=filename)
@@ -221,7 +221,7 @@ def get_prescription():
     prescriptionBean = PrescriptionBean(username=username, file=buf, fileName=fileName)
     dao.loadPrescription(prescriptionBean=prescriptionBean)
     buf.seek(0)
-    response = send_file(buf, attachment_filename=fileName, as_attachment=True)
+    response = send_file(buf, download_name=fileName, as_attachment=True)
     return response
 
 @app.route('/dashboard', methods=['GET'])
