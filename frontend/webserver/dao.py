@@ -4,8 +4,7 @@ from pub import Publisher, Topic
 import logging
 from notifications_pb2 import PrescriptionUploaded
 from pybreaker import CircuitBreaker
-
-from config import *
+import config
 
 class PrescribedDrug:
     def __init__(self, name=None, frequency=None):
@@ -33,7 +32,7 @@ class DynamoBean:
 
 class Dao:
     
-    circuitBreaker = CircuitBreaker(fail_max=CBREAKER_OPEN_AFTER, reset_timeout=CBREAKER_RESET_TIMEOUT)
+    circuitBreaker = CircuitBreaker(fail_max=config.CBREAKER_OPEN_AFTER, reset_timeout=config.CBREAKER_RESET_TIMEOUT)
 
     #@circuitBreaker
     def __init__(self):
@@ -80,7 +79,7 @@ class PrescriptionsDao(Dao):
     def __init__(self):
         super().__init__()
         self.tableName = "Prescriptions"
-        self.bucketName = BUCKET_NAME
+        self.bucketName = config.BUCKET_PRESCRIPTIONS
     
     def storePrescription(self, prescriptionBean):
         
