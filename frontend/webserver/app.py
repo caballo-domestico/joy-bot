@@ -70,16 +70,19 @@ def signin():
         password = request.form.get("upass")
         username = request.form.get("username")
         phone_num = request.form.get("uprefix")+request.form.get("uphone")
-        cookies = {
-            'userphone':phone_num, 
-            'username':username,
-            'count':'1'
-        }
-        resp = user_cookie(dict=cookies, page=auth)
         rpc_obj = RegistrationClient(host=config.GRPC_MANAGEUSER_ADDR, port=config.GRPC_MANAGEUSER_PORT)
-        rpc_obj.get_user(email=email, password=password, username=username, phone_num=phone_num, confirmed=False)
-        sms_sender(phone_num)
-        return resp
+        response = rpc_obj.get_user(email=email, password=password, username=username, phone_num=phone_num, confirmed=False)
+        if response.available:
+            cookies = {
+                'userphone':phone_num, 
+                'username':username,
+                'count':'1'
+            }
+            resp = user_cookie(dict=cookies, page=auth)
+            sms_sender(phone_num)
+            return resp
+        else:
+            flash('Unavailable username', category="danger")
     return render_template('signin.html')
 
 @app.route('/auth', methods=('GET', 'POST'))
@@ -115,7 +118,7 @@ def confirmation():
                 'count': str(value)
             }     
             ret = user_cookie(dict=counter, page=page)
-            flash(f'Wrong pin, {str(3-value)} try left', category="danger")
+            flash(f'Wrong pin, {str(4-value)} try left', category="danger")
             return ret
     return render_template('auth.html')
 

@@ -15,7 +15,7 @@ message Message{
 }
 
 message MessageResponse{
- bool received = 1;
+ bool available = 1;
 }
 
 message PinMessage{

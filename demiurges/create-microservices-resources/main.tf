@@ -52,11 +52,24 @@ resource "aws_s3_bucket" "prescriptions" {
 resource "aws_dynamodb_table" "users" {
   name           = "Users"
   hash_key       = "phone_num"
-  read_capacity  = 5
-  write_capacity = 5
+  read_capacity  = 10
+  write_capacity = 10
   attribute {
     name = "phone_num"
     type = "S"
+  }
+  attribute {
+    name = "username"
+    type = "S"
+  }
+
+  global_secondary_index {
+    name               = "Users_username"
+    hash_key           = "username"
+    write_capacity     = 5
+    read_capacity      = 5
+    projection_type    = "INCLUDE"
+    non_key_attributes = ["username"]
   }
 }
 

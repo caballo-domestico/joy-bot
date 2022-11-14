@@ -1,14 +1,15 @@
 import boto3
-from boto3.dynamodb.conditions import Attr
+from boto3.dynamodb.conditions import Attr, Key
 import logging
 from pybreaker import CircuitBreaker
 import config
 
 class DynamoBean:
-    def __init__(self, tableName=None, item=None, table=None, key=None, query=None):
+    def __init__(self, tableName=None, item=None, table=None, GSIName=None, key=None, query=None):
         self.tableName = tableName
         self.item = item    # use it to store values in a table
         self.table = table  # the table corresponding with the requested tableName
+        self.GSIName = GSIName
         self.key = key      # key to get an item from table
         self.query = query
 
@@ -39,6 +40,15 @@ class Dao:
         item = self.dynamodbClient.get_item(TableName=dynamoBean.tableName, Key={dynamoBean.key:{'S':dynamoBean.query}})
         return item
 
+    @circuitBreaker
+    def getItemFromGSI(self, dynamoBean):
+        table = self.dynamodb.Table(dynamoBean.tableName)
+        item = table.query(
+                IndexName=dynamoBean.GSIName,
+                KeyConditionExpression=Key(dynamoBean.key).eq(dynamoBean.query)
+            )
+        logging.info('RETURN %s', item)
+        return item
     @circuitBreaker
     def deleteItemFromTable(self, dynamoBean):
         item = self.dynamodbClient.delete_item(TableName=dynamoBean.tableName, Key={dynamoBean.key:{'S':dynamoBean.query}})
@@ -105,6 +115,12 @@ class RegistrationDao(Dao):
         resp = self.getItemFromTable(dynamoBean)
         return resp
 
+    def getUsername(self, registrationBean):
+        key_str = "username"
+        GSIName = "Users_username"
+        dynamoBean = DynamoBean(tableName=self.tableName, GSIName=GSIName, key=key_str, query=registrationBean.phone_num)
+        resp = self.getItemFromGSI(dynamoBean)
+        return resp
 
 class PinDao(Dao):
 

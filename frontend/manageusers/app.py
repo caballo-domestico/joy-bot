@@ -25,10 +25,18 @@ class RegistrationService(pb2_grpc.RegistrationServicer):
         username = request.username
         phone_num = request.phone_num
         confirmed = request.confirmed
-
+        registrationBean=RegistrationBean(email=email, password=password, username=username, phone_num=phone_num, confirmed=confirmed)
         registrationDao = RegistrationDao()
-        registrationDao.registerUser(registrationBean=RegistrationBean(email=email, password=password, username=username, phone_num=phone_num, confirmed=confirmed))
-        result = {'received': True}
+
+        userRes = registrationDao.getUsername(registrationBean=registrationBean)
+        logging.info('FINAL ITEM %s', userRes)
+        if 'Items' in userRes or len(userRes['Items'])>0:
+            logging.info("Utente replicatoooo")
+            result = {'available':False}
+        else:
+            logging.info('Utente unicooooo')
+            registrationDao.registerUser(registrationBean=registrationBean)
+            result = {'available': True}
         
         return pb2.MessageResponse(**result)
     
