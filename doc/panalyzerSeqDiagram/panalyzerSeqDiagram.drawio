@@ -1,0 +1,167 @@
+<mxfile host="65bd71144e">
+    <diagram id="hxUH3TJHs5PIEpigtoU2" name="Pagina-1">
+        <mxGraphModel dx="1581" dy="573" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="Notification Listener" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="220" y="160" width="100" height="370" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" vertex="1" parent="2">
+                    <mxGeometry x="45" y="60" width="10" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="" style="group" vertex="1" connectable="0" parent="1">
+                    <mxGeometry x="-70" y="130" width="100" height="410" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="" style="shape=umlLifeline;participant=umlActor;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=36;outlineConnect=0;size=40;" vertex="1" parent="7">
+                    <mxGeometry x="40" y="37.27272727272727" width="20" height="372.72727272727275" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="Apache Kafka" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="7">
+                    <mxGeometry x="5" y="10" width="90" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="notify(PrescriptionUploaded, PrescriptionNotification)" style="html=1;verticalAlign=bottom;endArrow=open;entryX=0.021;entryY=0.559;endFill=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" target="11" parent="1" source="5">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="195" y="220" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="14" value="Notification channel" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="390" y="160" width="100" height="370" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" vertex="1" parent="14">
+                    <mxGeometry x="45" y="160" width="10" height="10" as="geometry"/>
+                </mxCell>
+                <mxCell id="36" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" vertex="1" parent="14">
+                    <mxGeometry x="45" y="194" width="10" height="10" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" value="Main" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="560" y="160" width="100" height="380" as="geometry"/>
+                </mxCell>
+                <mxCell id="28" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" vertex="1" parent="16">
+                    <mxGeometry x="45" y="50" width="10" height="310" as="geometry"/>
+                </mxCell>
+                <mxCell id="23" value="write(DeserializedNotification)" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;" edge="1" target="22" parent="1" source="11">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="325" y="320" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="29" value="read(DeserializedNotification)" style="html=1;verticalAlign=bottom;endArrow=block;" edge="1" parent="1" source="28">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="510" y="460" as="sourcePoint"/>
+                        <mxPoint x="439.32352941176487" y="354.25" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="31" value="Analyzer" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="910" y="160" width="100" height="370" as="geometry"/>
+                </mxCell>
+                <mxCell id="33" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" vertex="1" parent="31">
+                    <mxGeometry x="45" y="200" width="10" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="34" value="AnalyzeS3Object(PrescriptionBucket, PrescriptionKey)" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;" edge="1" target="33" parent="1" source="28">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="715" y="360" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="37" value="" style="group" vertex="1" connectable="0" parent="1">
+                    <mxGeometry x="1090" y="120" width="100" height="410" as="geometry"/>
+                </mxCell>
+                <mxCell id="38" value="" style="shape=umlLifeline;participant=umlActor;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=36;outlineConnect=0;size=40;" vertex="1" parent="37">
+                    <mxGeometry x="40" y="37.27272727272727" width="20" height="372.72727272727275" as="geometry"/>
+                </mxCell>
+                <mxCell id="40" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" vertex="1" parent="38">
+                    <mxGeometry x="5" y="216.37" width="10" height="23.63" as="geometry"/>
+                </mxCell>
+                <mxCell id="39" value="Amazon Textract" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="37">
+                    <mxGeometry y="10" width="100" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="41" value="AnalyzeDocument(Prescription)" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;" edge="1" target="40" parent="1" source="33">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1065" y="373.64" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="42" value="return PrescriptionRawData" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;exitX=0;exitY=0.95;" edge="1" source="40" parent="1" target="33">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1060" y="450" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="35" value="return PrescriptionData" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;exitX=0;exitY=0.95;" edge="1" source="33" parent="1" target="28">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="835" y="436" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="43" value="DAO" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="727" y="160" width="100" height="400" as="geometry"/>
+                </mxCell>
+                <mxCell id="51" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" vertex="1" parent="43">
+                    <mxGeometry x="45" y="320" width="10" height="10" as="geometry"/>
+                </mxCell>
+                <mxCell id="47" value="Listen(PrescriptionUploaded)" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;" edge="1" parent="1" source="28">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="510" y="221" as="sourcePoint"/>
+                        <mxPoint x="275" y="221" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="52" value="store(PrescriptionData)" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;" edge="1" target="51" parent="1" source="28">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="702" y="480" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="54" value="Main" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="560" y="620" width="100" height="380" as="geometry"/>
+                </mxCell>
+                <mxCell id="55" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" vertex="1" parent="54">
+                    <mxGeometry x="45" y="50" width="10" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="57" value="" style="group" vertex="1" connectable="0" parent="1">
+                    <mxGeometry x="220" y="590" width="105" height="410" as="geometry"/>
+                </mxCell>
+                <mxCell id="58" value="" style="shape=umlLifeline;participant=umlActor;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=36;outlineConnect=0;size=40;" vertex="1" parent="57">
+                    <mxGeometry x="40" y="37.27272727272727" width="20" height="372.72727272727275" as="geometry"/>
+                </mxCell>
+                <mxCell id="59" value="RPC middleware" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="57">
+                    <mxGeometry x="-5" y="10" width="110" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="60" value="gRPC server" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="414" y="620" width="100" height="380" as="geometry"/>
+                </mxCell>
+                <mxCell id="61" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" vertex="1" parent="60">
+                    <mxGeometry x="45" y="65" width="10" height="165" as="geometry"/>
+                </mxCell>
+                <mxCell id="62" value="Listen(addr, port)" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;" edge="1" parent="1" target="61">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="605" y="688" as="sourcePoint"/>
+                        <mxPoint x="469" y="688" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="63" value="DAO" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="727" y="620" width="100" height="400" as="geometry"/>
+                </mxCell>
+                <mxCell id="67" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" vertex="1" parent="63">
+                    <mxGeometry x="45" y="120" width="10" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="65" value="getPrescribedDrugs(User)" style="html=1;verticalAlign=bottom;endArrow=block;" edge="1" parent="1" source="58">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="349.5" y="714.6363636363635" as="sourcePoint"/>
+                        <mxPoint x="459" y="714.6363636363635" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="68" value="LoadPrescribedDrugs(User)" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;" edge="1" target="67" parent="1" source="61">
+                    <mxGeometry x="-0.0693" relative="1" as="geometry">
+                        <mxPoint x="460" y="740" as="sourcePoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="69" value="return PrescribedDrugs" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;exitX=0;exitY=0.95;" edge="1" source="67" parent="1" target="61">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="702" y="816" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="70" value="return SerializedPrescribedDrugs" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="269.81034482758605" y="838.5" as="targetPoint"/>
+                        <mxPoint x="459" y="838.5" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
