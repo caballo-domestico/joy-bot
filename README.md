@@ -39,7 +39,7 @@ $ cd frontend
 $ ./start-orchestration.sh
 ```
 
-You must have installed `docker-compose`, `protoc` and the Python and Go plugins of it, `pip`, the `Go` runtime, `python 3.x` .
+You must have installed `docker-compose`, `protoc` and the Python and Go plugins of it.
 
 ## Execution in remote AWS EC2 instance
 
