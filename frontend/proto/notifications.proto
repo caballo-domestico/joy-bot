@@ -3,8 +3,8 @@ syntax = "proto3";
 package notifications;
 
 message PrescriptionUploaded{
-    string key = 1;
-    string username = 2;
-    string s3link = 3;
-    string bucket = 4;
+    string key = 1;         // key of prescription in bucket
+    string username = 2;    // username of user who uploaded prescription
+    string s3link = 3;      // link to prescription in s3 bucket
+    string bucket = 4;      // name of s3 bucket storing the prescription
 }
