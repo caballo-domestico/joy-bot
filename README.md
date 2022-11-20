@@ -19,7 +19,9 @@ The above mentioned script will perform the following steps:
 
 Each step executes only if actual changes are detected (i.e. changes in sources, a container goes down, ...)
 
-During terraform step, you will be prompted to enter the name of an existing AWS key pair to use to ssh to the instance. You can also specify the name of a bucket to store prescription. If the bucket does not exists, it will be created.
+During Terraform step, you will be prompted to enter the name of an existing AWS key pair to use to ssh to the instance. You can also specify the name of a bucket to store prescription. If the bucket does not exists, it will be created.
+
+During Ansible step, when asked for BECOME password, insert your ec2-user sudo password. If you do not use a password when invoking sudo as ec2-user, simply hit `Enter` key.
 
 ## Configuration
 
