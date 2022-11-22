@@ -69,9 +69,9 @@ func StoreAnalysis(relationships map[string]string, prescriptionId string) error
 	item[string(KEY_DRUGS)] = &types.AttributeValueMemberL{Value: []types.AttributeValue{}}
 	drugList := &(item[string(KEY_DRUGS)].(*types.AttributeValueMemberL).Value)
 	for key, value := range relationships {
-		// It is assumed that the relationships keys are in the format "KEY[i]: "
-		// the [i] part is optional. It appears only if it is a series of values.
-		// We remove the ": " part to simplify the storage to dynamodb.
+		// It is assumed that the relationships keys are in the format "KEYi: "
+		// the "i" char is optional. It appears only if it is a series of values.
+		// We remove the ": " substring to simplify the storage to dynamodb.
 		tableKey := strings.Trim(key, ": ")
 
 		// Couples each prescribed drug with its frequency and aggregate the couples in a
