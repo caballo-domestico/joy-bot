@@ -118,7 +118,7 @@ class RegistrationDao(Dao):
     def getUsername(self, registrationBean):
         key_str = "username"
         GSIName = "Users_username"
-        dynamoBean = DynamoBean(tableName=self.tableName, GSIName=GSIName, key=key_str, query=registrationBean.phone_num)
+        dynamoBean = DynamoBean(tableName=self.tableName, GSIName=GSIName, key=key_str, query=registrationBean.username)
         resp = self.getItemFromGSI(dynamoBean)
         return resp
 

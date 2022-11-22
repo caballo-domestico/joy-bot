@@ -27,16 +27,22 @@ class RegistrationService(pb2_grpc.RegistrationServicer):
         confirmed = request.confirmed
         registrationBean=RegistrationBean(email=email, password=password, username=username, phone_num=phone_num, confirmed=confirmed)
         registrationDao = RegistrationDao()
-
+        phoneRes = registrationDao.getUser(registrationBean=registrationBean)
         userRes = registrationDao.getUsername(registrationBean=registrationBean)
-        logging.info('FINAL ITEM %s', userRes)
-        if 'Items' in userRes or len(userRes['Items'])>0:
-            logging.info("Utente replicatoooo")
+        logging.info("userRes %s", userRes)
+        logging.info("items len %s", len(userRes['Items']))
+        if 'Items' in userRes and len(userRes['Items'])>0:
             result = {'available':False}
         else:
-            logging.info('Utente unicooooo')
-            registrationDao.registerUser(registrationBean=registrationBean)
             result = {'available': True}
+
+        if 'Item' in phoneRes:
+            result['unregistered'] = False
+        else:
+            if result['available']:
+                registrationDao.registerUser(registrationBean=registrationBean)
+            result ['unregistered'] = True
+        logging.info("results %s", result)
         
         return pb2.MessageResponse(**result)
     
@@ -71,7 +77,8 @@ class RegistrationService(pb2_grpc.RegistrationServicer):
         registrationDao = RegistrationDao()
         response = registrationDao.getUser(registrationBean=RegistrationBean(phone_num=phone))
         if 'Item' in response:
-            return pb2.LoginResponse(password=response['Item']['password']['S'], confirmed=response['Item']['confirmed']['BOOL'])
+            return pb2.LoginResponse(password=response['Item']['password']['S'], username=response['Item']['username']['S']
+            ,confirmed=response['Item']['confirmed']['BOOL'])
         return pb2.LoginResponse(password='not found', confirmed=False)
 
 

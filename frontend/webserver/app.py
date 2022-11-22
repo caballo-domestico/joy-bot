@@ -81,8 +81,10 @@ def signin():
             resp = user_cookie(dict=cookies, page=auth)
             sms_sender(phone_num)
             return resp
-        else:
+        elif not response.available:
             flash('Unavailable username', category="danger")
+        elif  not response.unregistered:
+            flash("Phone number already exists", category="danger")
     return render_template('signin.html')
 
 @app.route('/auth', methods=('GET', 'POST'))
@@ -135,7 +137,8 @@ def login():
         confirmed = response.confirmed
         if(db_pass == request.form.get('upass') and confirmed):
             cookie_dict = {'logged':'true',
-                        'userphone':phone_num}
+                        'userphone':phone_num,
+                        'username':response.username}
             page = '/'
             resp = user_cookie(cookie_dict, page)
             return resp 
@@ -188,7 +191,7 @@ def upload_prescription():
             
             # uploads prescription and its metadata to db
             filename = secure_filename(file.filename).replace(" ", "_")
-            username=quote_plus("test")
+            username=quote_plus(request.cookies.get('username'))
             dao = PrescriptionsDao()
             bean = PrescriptionBean(username=username, file=file, fileName=filename)
             dao.storePrescription(prescriptionBean=bean)
