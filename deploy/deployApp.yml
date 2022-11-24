@@ -17,6 +17,7 @@
         src: ~/.aws/
         dest: /home/ec2-user/.aws
 
+    # change contents of frontend/.rsync-filter to specify which files to ignore
     - name: Copy app files
       ansible.posix.synchronize:
         src: "{{ local_project_path }}/frontend/" 

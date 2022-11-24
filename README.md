@@ -13,9 +13,10 @@ $ ./deploy.sh
 Usage: ./deploy.sh path/to/ssh/key.pem [--skip-terraform]  [--skip-dependencies]
 ```
 The above mentioned script will perform the following steps:
-- Create the required infrastructure from Amazon Web Services using Terraform
-- Compile the proto files to sources using Make
-- Install docker and app files and launch it using Ansible
+- Create the required infrastructure from Amazon Web Services using Terraform;
+- Compile the proto files to sources using Make;
+- Write a `hosts` text file with the informations needed to ssh to the remote EC2 instance;
+- Install docker and app files and launch it using Ansible.
 
 Each step executes only if actual changes are detected (i.e. changes in sources, a container goes down, ...)
 
