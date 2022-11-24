@@ -16,6 +16,7 @@ message Message{
 
 message MessageResponse{
  bool available = 1;
+ bool unregistered = 2;
 }
 
 message PinMessage{
@@ -36,5 +37,6 @@ message LoginMessage{
 
 message LoginResponse{
     string password = 1;
-    bool confirmed = 2;
+    string username = 2;
+    bool confirmed = 3;
 }
