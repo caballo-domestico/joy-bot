@@ -5,7 +5,7 @@
 {% endblock %}
 {% block content %}
 {{ super() }}
-<h1>Prescriptions of {{ request.args.get('username') }}</h1>
+<h1>Prescriptions of {{ request.cookies.get('username') }}</h1>
 <ol class="list-group">
   {% for name in names: %}
   <li class="list-group-item"><a href=/get-prescription?username={{ username }}&fileName={{ name }}> {{ name }}</a></li>

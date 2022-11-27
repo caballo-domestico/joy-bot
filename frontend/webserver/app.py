@@ -72,7 +72,7 @@ def signin():
         phone_num = request.form.get("uprefix")+request.form.get("uphone")
         rpc_obj = RegistrationClient(host=config.GRPC_MANAGEUSER_ADDR, port=config.GRPC_MANAGEUSER_PORT)
         response = rpc_obj.get_user(email=email, password=password, username=username, phone_num=phone_num, confirmed=False)
-        if response.available:
+        if response.available and response.unregistered:
             cookies = {
                 'userphone':phone_num, 
                 'username':username,
@@ -191,7 +191,8 @@ def upload_prescription():
             
             # uploads prescription and its metadata to db
             filename = secure_filename(file.filename).replace(" ", "_")
-            username=quote_plus(request.cookies.get('username'))
+            un = request.cookies.get('username')
+            username=quote_plus(un)
             dao = PrescriptionsDao()
             bean = PrescriptionBean(username=username, file=file, fileName=filename)
             dao.storePrescription(prescriptionBean=bean)
@@ -206,7 +207,7 @@ def list_prescriptions():
     if not isLogged():
         redirectToLogin()
 
-    username = request.args.get('username', type=str)
+    username = request.cookies.get('username')
     dao = PrescriptionsDao()
     names = dao.loadAllUserPrescriptionsNames(prescriptionBean=PrescriptionBean(username=username))
     logging.info('Names %s', names)
@@ -221,7 +222,7 @@ def get_prescription():
         return render_template('loginuser.html')
     dao = PrescriptionsDao()
     fileName = request.args.get('fileName', type=str)
-    username = request.args.get('username', type=str)
+    username = request.cookies.get('username', type=str)
     buf = TemporaryFile(mode="w+b")
     logging.info('Filename %s', fileName+' '+username)
     prescriptionBean = PrescriptionBean(username=username, file=buf, fileName=fileName)
@@ -233,7 +234,7 @@ def get_prescription():
 @app.route('/dashboard', methods=['GET'])
 @enforceLogin
 def dashboard():
-    username = request.args.get('username', type=str)
+    username = request.cookies.get('username')
     dao = PrescribedDrugsDao(config.GRPC_PANALYZER_ADDR, config.GRPC_PANALYZER_PORT)
     prescribedDrugs = dao.getPrescribedDrugs(username)
     return render_template('dashboard.html', prescribedDrugs=prescribedDrugs, username=username)
